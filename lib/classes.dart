@@ -3,6 +3,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
 import 'globals.dart' as globals;
+import 'createpack.dart';
+import 'makequestion.dart';
 
 
 @HiveType(typeId: 10)
@@ -229,7 +231,8 @@ class _QuestionState extends State<Question>{
 class Pack extends StatefulWidget{
   Pack({required this.name, required this.hivePack, required this.enabled}) : super();
   final String name;
-  final HivePack hivePack;
+  final Pack hivePack;
+  final List<Question> questions = [];
   bool enabled;
 
   @override
@@ -250,8 +253,8 @@ class _PackState extends State<Pack>{
     int qst = 0;
     int correct = 0;
     widget.hivePack.questions.forEach((element) {
-      qst += element.attempted;
-      correct += element.correct;
+      qst += element.hiveQuestion.attempted;
+      correct += element.hiveQuestion.correct;
     });
 
     if(correct == 0){
@@ -279,7 +282,7 @@ class _PackState extends State<Pack>{
       onDoubleTap: () async{
         Box box = await Hive.openBox("Globals");
         await box.put("editbox", widget.hivePack);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: widget.hivePack)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: widget)));
       },
       child: Material(
         elevation: 5,
