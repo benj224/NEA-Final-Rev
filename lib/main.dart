@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'dart:developer' as dev;
 
 import 'globals.dart' as globals;
 import 'home.dart';
@@ -19,50 +20,10 @@ void main() async {
       debug: true
   );
 
+  dev.log("done");
 
-  void sendNotification(int hour, int minute, String question, String ans1, String ans2, String ans3) async {
 
-    if(!globals.notificationsAllowed){
-      await globals.requestUserPermission();
-    }
 
-    if(!globals.notificationsAllowed){
-      return;
-    }
-    await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: 100,
-          channelKey: "awesome_notifications",
-          title: question,
-          body: "test",
-          //notificationLayout: NotificationLayout.BigPicture,
-          //largeIcon: "https://avidabloga.files.wordpress.com/2012/08/emmemc3b3riadeneilarmstrong3.jpg",
-          //bigPicture: "https://www.dw.com/image/49519617_303.jpg",
-          showWhen: true,
-        ),
-        actionButtons: [
-          NotificationActionButton(
-            key: "a1",
-            label: ans1,
-            enabled: true,
-            buttonType: ActionButtonType.Default,
-          ),
-          NotificationActionButton(
-            key: "a2",
-            label: ans2,
-            enabled: true,
-            buttonType: ActionButtonType.Default,
-          ),
-          NotificationActionButton(
-            key: "a3",
-            label: ans3,
-            enabled: true,
-            buttonType: ActionButtonType.Default,
-          )
-        ],
-        schedule: NotificationCalendar.fromDate(date: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, hour, minute))
-    );
-  }
 
 
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:giffy_dialog/giffy_dialog.dart';
 import 'dart:developer' as dev;
 
 import 'globals.dart' as globals;
@@ -23,46 +24,127 @@ class MyHomePage extends StatefulWidget{
 
 class _MyHomePageState extends State<MyHomePage> {
 
+
+  void sendNotification(int hour, int minute, String question, String ans1, String ans2, String ans3) async {
+
+    if(!globals.notificationsAllowed){
+      await globals.requestUserPermission();
+    }
+
+    if(!globals.notificationsAllowed){
+      return;
+    }
+    await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: 100,
+          channelKey: "basic_channel",
+          title: question,
+          body: "test",
+          //notificationLayout: NotificationLayout.BigPicture,
+          //largeIcon: "https://avidabloga.files.wordpress.com/2012/08/emmemc3b3riadeneilarmstrong3.jpg",
+          //bigPicture: "https://www.dw.com/image/49519617_303.jpg",
+          showWhen: true,
+        ),
+        actionButtons: [
+          NotificationActionButton(
+            key: "a1",
+            label: ans1,
+            enabled: true,
+            buttonType: ActionButtonType.Default,
+          ),
+          NotificationActionButton(
+            key: "a2",
+            label: ans2,
+            enabled: true,
+            buttonType: ActionButtonType.Default,
+          ),
+          NotificationActionButton(
+            key: "a3",
+            label: ans3,
+            enabled: true,
+            buttonType: ActionButtonType.Default,
+          )
+        ],
+        schedule: NotificationCalendar.fromDate(date: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour, DateTime.now().minute + 1))
+        //schedule: NotificationCalendar.fromDate(date: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, hour, minute))
+    );
+  }
+
+  void cancelAllNotifications(){
+    AwesomeNotifications().cancelAll();
+  }
+
   Future<void> requestUserPermission() async {
     showDialog(
         context: context,
         builder: (_) =>
-
-            AlertDialog(//dialog to request user permission for notifications
-              title: Text("Notification Access Required"),
-              content: Text("This App required access to notificatins to function"),
-              actions: <Widget>[
-                TextButton(
-                    onPressed: () async {
-                      Navigator.pop(context, "Ok");
-                      await AwesomeNotifications().requestPermissionToSendNotifications();
-                      globals.notificationsAllowed = await AwesomeNotifications().isNotificationAllowed();
-                    },
-                    child: Text("OK")
-                ),
-                TextButton(
-                    onPressed: () => Navigator.pop(context, "Cancel"),
-                    child: Text("Cancel")
-                )
-              ],
+            NetworkGiffyDialog(
+              buttonOkText: Text('Allow', style: TextStyle(color: Colors.white)),
+              buttonCancelText: Text('Later', style: TextStyle(color: Colors.white)),
+              buttonCancelColor: Colors.grey,
+              buttonOkColor: Colors.deepPurple,
+              buttonRadius: 0.0,
+              image: Image.asset("assets/images/animated-bell.gif", fit: BoxFit.cover),
+              title: Text('Get Notified!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.w600)
+              ),
+              description: Text('Allow Awesome Notifications to send to you beautiful notifications!',
+                textAlign: TextAlign.center,
+              ),
+              entryAnimation: EntryAnimation.DEFAULT,
+              onCancelButtonPressed: () async {
+                Navigator.of(context).pop();
+                globals.notificationsAllowed = await AwesomeNotifications().isNotificationAllowed();
+                setState(() {
+                  globals.notificationsAllowed = globals.notificationsAllowed;
+                });
+              },
+              onOkButtonPressed: () async {
+                Navigator.of(context).pop();
+                await AwesomeNotifications().requestPermissionToSendNotifications();
+                globals.notificationsAllowed = await AwesomeNotifications().isNotificationAllowed();
+                setState(() {
+                  globals.notificationsAllowed = globals.notificationsAllowed;
+                });
+              },
             )
     );
   }
 
 
-  var _result;
-
   @override
   void initState() {
     //check permissions for notification access
 
-    globals.requestUserPermission = requestUserPermission;
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      globals.notificationsAllowed = isAllowed;
+      if (!isAllowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
 
-    if(!globals.notificationsAllowed){
-      Future.delayed(Duration.zero, (){
-        requestUserPermission();
-      });
-    }
+
+    AwesomeNotifications().createdStream.listen((ReceivedNotification notification) {
+      print("Notification created: "+(notification.title ?? notification.body ?? notification.id.toString()));
+    });
+
+    AwesomeNotifications().displayedStream.listen((ReceivedNotification notification) {
+      print("Notification displayed: "+(notification.title ?? notification.body ?? notification.id.toString()));
+    });
+
+    AwesomeNotifications().dismissedStream.listen((ReceivedAction dismissedAction) {
+      print("Notification dismissed: "+(dismissedAction.title ?? dismissedAction.body ?? dismissedAction.id.toString()));
+    });
+
+    AwesomeNotifications().actionStream.listen((ReceivedAction action){
+      print("Action received!");
+
+
+    });
+
   }
 
 
@@ -94,8 +176,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         )
-
-
     );
   }
 }
