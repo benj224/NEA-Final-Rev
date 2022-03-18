@@ -59,7 +59,7 @@ class Question extends StatefulWidget{
   Question({required this.cardNo, required this.question, required this.answers, required this.hiveQuestion}) : super();
   final HiveQuestion hiveQuestion;
   final int cardNo;
-  final String question;
+  String question;
   List<int> pastAnswers = [1,1,1,1,1,1];
   final List<HiveAnswer> answers;
   double progress = 0;
@@ -161,7 +161,7 @@ class _QuestionState extends State<Question>{
       },
       onDoubleTap: (){
         ///push to question creator with question
-        Navigator.push(context, MaterialPageRoute(builder: (context) => MakeQuestion(question: widget.hiveQuestion)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MakeQuestion(question: widget)));
         ///delete question
         globals.questions.remove(widget);
       },
@@ -231,7 +231,7 @@ class _QuestionState extends State<Question>{
 class Pack extends StatefulWidget{
   Pack({required this.name, required this.hivePack, required this.enabled}) : super();
   final String name;
-  final Pack hivePack;
+  final HivePack hivePack;
   final List<Question> questions = [];
   bool enabled;
 
@@ -253,8 +253,8 @@ class _PackState extends State<Pack>{
     int qst = 0;
     int correct = 0;
     widget.hivePack.questions.forEach((element) {
-      qst += element.hiveQuestion.attempted;
-      correct += element.hiveQuestion.correct;
+      qst += element.attempted;
+      correct += element.correct;
     });
 
     if(correct == 0){

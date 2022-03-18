@@ -3,6 +3,9 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'dart:developer' as dev;
 
 import 'globals.dart' as globals;
+import 'makequestion.dart';
+import 'createpack.dart';
+import 'classes.dart';
 
 ///changes to make
 ///load all packs from hive in main function
@@ -85,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: FloatingActionButton(
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2))));
+                      MaterialPageRoute(builder: (context) => CreatePack(pack: Pack(enabled: true, name: "name", hivePack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2),))));
                 },
               ),
             ),

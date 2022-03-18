@@ -7,7 +7,7 @@ import 'createpack.dart';
 
 class MakeQuestion extends StatefulWidget{
   MakeQuestion({required this.question}):super();
-  HiveQuestion question;
+  Question question;
 
   TextEditingController qstCont = TextEditingController();
   TextEditingController ans1Cont = TextEditingController();
@@ -177,6 +177,5 @@ class _MakeQuestionState extends State<MakeQuestion> {
         ],
       ),
     );
-
   }
 }
