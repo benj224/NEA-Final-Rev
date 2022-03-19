@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:giffy_dialog/giffy_dialog.dart';
 import 'dart:developer' as dev;
 
 import 'globals.dart' as globals;
 import 'home.dart';
 
 void main() async {
-  await AwesomeNotifications().initialize(
+
+  AwesomeNotifications().removeChannel("awesome_notifications");
+  /*await AwesomeNotifications().initialize(
     // set the icon to null if you want to use the default app icon
       null,
       [
@@ -20,7 +23,14 @@ void main() async {
       debug: true
   );
 
-  dev.log("done");
+  dev.log("done");*/
+
+
+
+
+
+
+
 
 
 
@@ -33,6 +43,85 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  void initState(){
+    void sendNotification(int hour, int minute, String question, String ans1, String ans2, String ans3) async {
+
+      if(!globals.notificationsAllowed){
+        return;
+      }
+      await AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            id: 100,
+            channelKey: "basic_channel",
+            title: question,
+            body: "test",
+            //notificationLayout: NotificationLayout.BigPicture,
+            //largeIcon: "https://avidabloga.files.wordpress.com/2012/08/emmemc3b3riadeneilarmstrong3.jpg",
+            //bigPicture: "https://www.dw.com/image/49519617_303.jpg",
+            showWhen: true,
+          ),
+          actionButtons: [
+            NotificationActionButton(
+              key: "a1",
+              label: ans1,
+              enabled: true,
+              buttonType: ActionButtonType.Default,
+            ),
+            NotificationActionButton(
+              key: "a2",
+              label: ans2,
+              enabled: true,
+              buttonType: ActionButtonType.Default,
+            ),
+            NotificationActionButton(
+              key: "a3",
+              label: ans3,
+              enabled: true,
+              buttonType: ActionButtonType.Default,
+            )
+          ],
+          schedule: NotificationCalendar.fromDate(date: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour, DateTime.now().minute + 1))
+        //schedule: NotificationCalendar.fromDate(date: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, hour, minute))
+      );
+    }
+
+    void cancelAllNotifications(){
+      AwesomeNotifications().cancelAll();
+    }
+
+
+
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      globals.notificationsAllowed = isAllowed;
+      if (!isAllowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+
+
+    AwesomeNotifications().createdStream.listen((ReceivedNotification notification) {
+      print("Notification created: "+(notification.title ?? notification.body ?? notification.id.toString()));
+    });
+
+    AwesomeNotifications().displayedStream.listen((ReceivedNotification notification) {
+      print("Notification displayed: "+(notification.title ?? notification.body ?? notification.id.toString()));
+    });
+
+    AwesomeNotifications().dismissedStream.listen((ReceivedAction dismissedAction) {
+      print("Notification dismissed: "+(dismissedAction.title ?? dismissedAction.body ?? dismissedAction.id.toString()));
+    });
+
+    AwesomeNotifications().actionStream.listen((ReceivedAction action){
+      print("Action received!");
+
+
+    });
+
+
+
+  }
 
   // This widget is the root of your application.
   @override
