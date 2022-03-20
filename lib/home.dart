@@ -68,6 +68,32 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 
+  List<Widget> getPacks(){
+    if(globals.packs.isEmpty){
+      return [Material(
+        elevation: 5,
+        color: Colors.red,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20)
+        ),
+        child: SizedBox(
+          height: 100,
+          child: Stack(
+            children: [
+              Align(
+                alignment: FractionalOffset(0.5, 0.1),
+                child: Text("You Have No Packs"),
+              ),
+            ],
+          ),
+        ),
+      ),];
+    };
+
+    return globals.packs;
+  }
+
+
 
   @override
   void initState() {
@@ -76,8 +102,6 @@ class _MyHomePageState extends State<MyHomePage> {
       Future.delayed(Duration.zero, (){
         requestUserPermission();
       });
-
-
     }
 
   }
@@ -94,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Container(
             height: 600,
             child: ListView(
-              children: globals.packs,
+              children: getPacks(),
             ),
           ),
         ),

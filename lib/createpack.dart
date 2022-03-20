@@ -82,7 +82,16 @@ class _CreatePackState extends State<CreatePack> {
               alignment: Alignment.bottomLeft,
               child: FloatingActionButton(
                   onPressed: () async {
-                    List<HiveQuestion> Qst = [];
+                    globals.packs.add(widget.pack);
+                    Box box = await Hive.openBox("Globals");
+                    List<dynamic> pcks = box.get("packs");
+                    pcks.add(widget.pack);
+                    box.delete("packs");
+                    box.put("packs", pcks);///might error cos pcks is dynamic
+
+
+
+                    /*List<HiveQuestion> Qst = [];
                     int cardNo = 0;
                     globals.questions.forEach((question) =>
                     {
@@ -129,7 +138,7 @@ class _CreatePackState extends State<CreatePack> {
                       _titleList.add(titleController.text);
                       box.delete("titles");
                       await box.put("titles", _titleList);
-                    }
+                    }*/
                     globals.questions = [];
 
                     ///schedule questions
@@ -146,19 +155,17 @@ class _CreatePackState extends State<CreatePack> {
                   Box box = await Hive.openBox("Globals");
                   List<dynamic> pcks = box.get("packs");
                   List<HivePack> newPcks = [];
-                  List<String> newTitles = [];
                   //List<Widget> newDisplayPacks = [];
                   pcks.forEach((pack) {
                     if (!(pack.title == widget.pack.name)) {
                       newPcks.add(pack);
-                      newTitles.add(pack.title);
                       //newDisplayPacks.add(PackDisplay(name: pack.title, hivePack: pack));
                     }
                   });
                   box.delete("packs");
                   box.put("packs", newPcks);
-                  box.delete("titles");
-                  box.put("titles", newTitles);
+
+                  widget.pack.deleteSelf();
 
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => MyHomePage()));
