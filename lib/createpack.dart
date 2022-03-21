@@ -83,8 +83,8 @@ class _CreatePackState extends State<CreatePack> {
               child: FloatingActionButton(
                   onPressed: () async {
                     globals.packs.add(widget.pack);
-                    Box box = await Hive.openBox("Globals");
-                    List<dynamic> pcks = box.get("packs");
+                    Box box = await Hive.box("Globals");
+                    List<Pack> pcks = box.get("packs");
                     pcks.add(widget.pack);
                     box.delete("packs");
                     box.put("packs", pcks);///might error cos pcks is dynamic

@@ -29,7 +29,8 @@ void main() async {
 
   await Hive.openBox<HivePack>("Globals");
   Box box = Hive.box("Globals");
-  List<Pack> packs///here
+  List<Pack> packs = box.get("packs");
+  globals.packs = packs;
 
   AwesomeNotifications().removeChannel("awesome_notifications");
   /*await AwesomeNotifications().initialize(
