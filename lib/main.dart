@@ -3,7 +3,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'dart:developer' as dev;
-import 'package:build_runner/build_runner.dart';
+//import 'package:build_runner/build_runner.dart';
 
 
 
@@ -27,9 +27,9 @@ void main() async {
   Hive.registerAdapter(HiveAnswerAdapter());
 
 
-  await Hive.openBox<HivePack>("Globals");
-  Box box = Hive.box("Globals");
-  List<Pack> packs = box.get("packs");
+  await Hive.openBox<List<HivePack>>("Globals");
+  Box<List<HivePack>> box = Hive.box("Globals");
+  List<HivePack> packs = box.get("packs")!;
   globals.packs = packs;
 
   AwesomeNotifications().removeChannel("awesome_notifications");

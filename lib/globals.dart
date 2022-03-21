@@ -2,6 +2,6 @@ import 'classes.dart';
 
 bool notificationsAllowed = false;
 late Function requestUserPermission;
-List<Question> questions = [];
-List<Pack> packs = [];
+List<HiveQuestion> questions = [];
+List<HivePack> packs = [];
 late Question newQuestion;

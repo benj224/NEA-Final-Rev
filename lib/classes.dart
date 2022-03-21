@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:build_runner/build_runner.dart';
+//import 'package:build_runner/build_runner.dart';
 
 import 'globals.dart' as globals;
 import 'createpack.dart';
@@ -244,7 +244,7 @@ class Pack extends StatefulWidget{
   _PackState createState() => _PackState();
 
   void deleteSelf() {
-    globals.packs.removeWhere((pack) => pack.name == this.name);
+    globals.packs.removeWhere((pack) => pack.title == this.name);
   }
 }
 

@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -24,7 +26,11 @@ class _CreatePackState extends State<CreatePack> {
   @override
   void initState() {
     super.initState();
-    globals.questions = widget.pack.questions;
+    globals.questions = widget.pack.hivePack.questions;
+  }
+
+  List<Question> loadQuestions(){
+    ///fill
   }
 
 
