@@ -16,9 +16,9 @@ part 'classes.g.dart';
 class HivePack extends HiveObject{
   HivePack({required this.title, required this.questions, required this.enabled, required this.frequency}) : super();
   @HiveField(11)
-  final String title;
+  String title;
   @HiveField(12)
-  final List<HiveQuestion> questions;
+  List<HiveQuestion> questions;
   @HiveField(13)
   bool enabled;
   @HiveField(14)
@@ -45,7 +45,7 @@ class HiveQuestion extends HiveObject{
   @HiveField(26)
   List<int> pastAnswers;
   @HiveField(27)
-  final HivePack hivePack;
+  HivePack hivePack;
 }
 
 
@@ -62,11 +62,11 @@ class HiveAnswer extends HiveObject{
 
 class Question extends StatefulWidget{
   Question({required this.cardNo, required this.question, required this.answers, required this.hiveQuestion}) : super();
-  final HiveQuestion hiveQuestion;
-  final int cardNo;
+  HiveQuestion hiveQuestion;
+  int cardNo;
   String question;
   List<int> pastAnswers = [1,1,1,1,1,1];
-  final List<HiveAnswer> answers;
+  List<HiveAnswer> answers;
   double progress = 0;
   bool enabled = true;
 
@@ -235,9 +235,9 @@ class _QuestionState extends State<Question>{
 
 class Pack extends StatefulWidget{
   Pack({required this.name, required this.hivePack, required this.enabled}) : super();
-  final String name;
-  final HivePack hivePack;
-  final List<Question> questions = [];
+  String name;
+  HivePack hivePack;
+  List<Question> questions = [];
   bool enabled;
 
   @override

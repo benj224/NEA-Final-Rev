@@ -28,11 +28,16 @@ void main() async {
 
 
   await Hive.openBox<List<HivePack>>("Globals");
+  dev.log("not set");
   Box<List<HivePack>> box = Hive.box("Globals");
-  List<HivePack> packs = box.get("packs")!;
-  globals.packs = packs;
+  dev.log("set");
+  List<HivePack>? _packs = box.get("packs");///erroring here need to go back to casting to hivepack, maby make a function.
+  if(!(_packs == null)){
+    globals.packs = _packs!;
+  }
 
   AwesomeNotifications().removeChannel("awesome_notifications");
+  dev.log("got to here");
   /*await AwesomeNotifications().initialize(
     // set the icon to null if you want to use the default app icon
       null,
@@ -144,7 +149,7 @@ class MyApp extends StatelessWidget {
     });
 
 
-
+    dev.log("here");
   }
 
   // This widget is the root of your application.

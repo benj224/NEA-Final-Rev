@@ -4,4 +4,4 @@ bool notificationsAllowed = false;
 late Function requestUserPermission;
 List<HiveQuestion> questions = [];
 List<HivePack> packs = [];
-late Question newQuestion;
+Question? newQuestion = null;

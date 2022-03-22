@@ -61,7 +61,6 @@ class _MakeQuestionState extends State<MakeQuestion> {
                 ),
               ),
             ),
-
             Align(
               alignment: FractionalOffset(0.2, 0.5),
               child: Checkbox(
@@ -88,8 +87,6 @@ class _MakeQuestionState extends State<MakeQuestion> {
                 ),
               ),
             ),
-
-
             Align(
               alignment: FractionalOffset(0.2, 0.6),
               child: Checkbox(
@@ -116,9 +113,32 @@ class _MakeQuestionState extends State<MakeQuestion> {
                 ),
               ),
             ),
-
-
-
+            Align(
+              alignment: FractionalOffset(0.2, 0.7),
+              child: Checkbox(
+                value: widget.a3corr,
+                onChanged: (bool? value){
+                  setState(() {
+                    widget.a3corr = value!;
+                  });
+                },
+              ),
+            ),
+            Align(
+              alignment: FractionalOffset(0.6, 0.7),
+              child: SizedBox(
+                height: 20,
+                width: MediaQuery.of(context).size.width * 0.425,
+                child: TextField(
+                  controller: widget.ans3Cont,
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                      hintText: "Answer 3",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -126,7 +146,7 @@ class _MakeQuestionState extends State<MakeQuestion> {
         children: [
           Align(
             alignment: Alignment.bottomRight,
-            child: FloatingActionButton(///look at this
+            child: FloatingActionButton(
                 onPressed: ()async{
                   widget.question.question = widget.qstCont.text;
                   widget.question.answers[0].text = widget.ans1Cont.text;
@@ -135,6 +155,15 @@ class _MakeQuestionState extends State<MakeQuestion> {
                   widget.question.answers[0].correct = widget.a1corr;
                   widget.question.answers[1].correct = widget.a2corr;
                   widget.question.answers[2].correct = widget.a3corr;
+
+
+                  widget.question.hiveQuestion.question = widget.qstCont.text;
+                  widget.question.hiveQuestion.answers[0].text = widget.ans1Cont.text;
+                  widget.question.hiveQuestion.answers[1].text = widget.ans2Cont.text;
+                  widget.question.hiveQuestion.answers[2].text = widget.ans3Cont.text;
+                  widget.question.hiveQuestion.answers[0].correct = widget.a1corr;
+                  widget.question.hiveQuestion.answers[1].correct = widget.a2corr;
+                  widget.question.hiveQuestion.answers[2].correct = widget.a3corr;
 
                   globals.newQuestion = widget.question;
                   Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: Pack(enabled: true, hivePack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2), name: "name",))));

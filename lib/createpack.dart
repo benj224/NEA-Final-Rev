@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -27,12 +28,20 @@ class _CreatePackState extends State<CreatePack> {
   void initState() {
     super.initState();
     globals.questions = widget.pack.hivePack.questions;
+
+    if(!(globals.newQuestion == null)){
+      globals.questions.add(globals.newQuestion!.hiveQuestion);
+      widget.pack.questions.add(globals.newQuestion!);
+      log(globals.newQuestion!.question);
+      globals.newQuestion = null;
+    }
   }
 
   List<Question> loadQuestions(){
     List<Question> outList = [];
     globals.questions.forEach((element) {
       outList.add(Question(answers: element.answers, cardNo: 0, hiveQuestion: element, question: element.question,));
+      log(element.question);
     });
     return outList;
   }
@@ -92,10 +101,19 @@ class _CreatePackState extends State<CreatePack> {
               alignment: Alignment.bottomLeft,
               child: FloatingActionButton(
                   onPressed: () async {
+                    widget.pack.name = titleController.text;
+                    widget.pack.hivePack.title = titleController.text;
+
                     globals.packs.add(widget.pack.hivePack);
-                    Box box = await Hive.box("Globals");
-                    List<Pack> pcks = box.get("packs");
-                    pcks.add(widget.pack);
+                    Box<List<HivePack>> box = await Hive.box("Globals");
+                    List<HivePack>? _pcks = box.get("packs");
+                    late List<HivePack> pcks;
+                    if(!(_pcks == null)){
+                      pcks = box.get("packs")!;
+                    }else{
+                      pcks = [];
+                    }
+                    pcks.add(widget.pack.hivePack);
                     box.delete("packs");
                     box.put("packs", pcks);///might error cos pcks is dynamic
 
