@@ -118,32 +118,7 @@ class _MakeQuestionState extends State<MakeQuestion> {
             ),
 
 
-            Align(
-              alignment: FractionalOffset(0.2, 0.7),
-              child: Checkbox(
-                  value: widget.a3corr,
-                  onChanged: (bool? value){
-                    setState(() {
-                      widget.a3corr = value!;
-                    });
-                  }
-              ),
-            ),
-            Align(
-              alignment: FractionalOffset(0.6, 0.7),
-              child: SizedBox(
-                height: 20,
-                width: MediaQuery.of(context).size.width * 0.425,
-                child: TextField(
-                  controller: widget.ans3Cont,
-                  decoration: InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      hintText: "Answer 3",
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
-                  ),
-                ),
-              ),
-            )
+
           ],
         ),
       ),

@@ -30,7 +30,11 @@ class _CreatePackState extends State<CreatePack> {
   }
 
   List<Question> loadQuestions(){
-    ///fill
+    List<Question> outList = [];
+    globals.questions.forEach((element) {
+      outList.add(Question(answers: element.answers, cardNo: 0, hiveQuestion: element, question: element.question,));
+    });
+    return outList;
   }
 
 
@@ -46,7 +50,7 @@ class _CreatePackState extends State<CreatePack> {
                   borderRadius: BorderRadius.circular(32))
           ),
         ),),
-        body: ListView(children: globals.questions),
+        body: ListView(children: loadQuestions()),
         // add items to the to-do list
         floatingActionButton: Stack(
           children: [
@@ -88,7 +92,7 @@ class _CreatePackState extends State<CreatePack> {
               alignment: Alignment.bottomLeft,
               child: FloatingActionButton(
                   onPressed: () async {
-                    globals.packs.add(widget.pack);
+                    globals.packs.add(widget.pack.hivePack);
                     Box box = await Hive.box("Globals");
                     List<Pack> pcks = box.get("packs");
                     pcks.add(widget.pack);

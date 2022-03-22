@@ -90,7 +90,13 @@ class _MyHomePageState extends State<MyHomePage> {
       ),];
     };
 
-    return globals.packs;
+    List<Pack> outPacks = [];
+
+    globals.packs.forEach((element) {
+      outPacks.add(Pack(enabled: element.enabled, hivePack: element, name: element.title,));
+    });
+
+    return outPacks;
   }
 
 
