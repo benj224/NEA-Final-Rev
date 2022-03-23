@@ -59,7 +59,9 @@ class _CreatePackState extends State<CreatePack> {
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(32))
           ),
-        ),),
+        ),
+          automaticallyImplyLeading: false,
+        ),
         body: ListView(children: loadQuestions()),
         // add items to the to-do list
         floatingActionButton: Stack(
@@ -132,14 +134,7 @@ class _CreatePackState extends State<CreatePack> {
 
                       globals.packs.add(widget.pack.hivePack);
                       Box box = await Hive.box("Globals");
-                      /*Box<List<HivePack>> box = await Hive.box("Globals");
-                      List<HivePack>? _pcks = box.get("packs");
-                      late List<HivePack> pcks;
-                      if(!(_pcks == null)){
-                        pcks = box.get("packs")!;
-                      }else{
-                        pcks = [];
-                      }*/
+
                       List<HivePack> pcks = await packsFromHive();
                       pcks.add(widget.pack.hivePack);
                       box.delete("packs");
