@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'classes.dart';
@@ -90,8 +91,6 @@ class _CreatePackState extends State<CreatePack> {
                             ],
                             cardNo: 0,
                             question: "<question>",),)));
-
-                      ///fix
                     });
                   },
                   tooltip: 'Add Item',
@@ -101,77 +100,61 @@ class _CreatePackState extends State<CreatePack> {
               alignment: Alignment.bottomLeft,
               child: FloatingActionButton(
                   onPressed: () async {
-                    widget.pack.name = titleController.text;
-                    widget.pack.hivePack.title = titleController.text;
-
-                    globals.packs.add(widget.pack.hivePack);
-                    Box<List<HivePack>> box = await Hive.box("Globals");
-                    List<HivePack>? _pcks = box.get("packs");
-                    late List<HivePack> pcks;
-                    if(!(_pcks == null)){
-                      pcks = box.get("packs")!;
+                    if(globals.questions.length == 0){
+                      showDialog(
+                          context: context,
+                          builder: (_) =>
+                              NetworkGiffyDialog(
+                                buttonOkText: Text('Allow', style: TextStyle(color: Colors.white)),
+                                buttonOkColor: Colors.deepPurple,
+                                onlyOkButton: true,
+                                buttonRadius: 0.0,
+                                image: Image.asset("assets/images/oops.png"),
+                                title: Text('No Questions',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 22.0,
+                                        fontWeight: FontWeight.w600)
+                                ),
+                                description: Text('Please add a question to this pack to save it.',
+                                  textAlign: TextAlign.center,
+                                ),
+                                entryAnimation: EntryAnimation.DEFAULT,
+                                onOkButtonPressed: () async {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                      );
                     }else{
-                      pcks = [];
-                    }
-                    pcks.add(widget.pack.hivePack);
-                    box.delete("packs");
-                    box.put("packs", pcks);///might error cos pcks is dynamic
 
+                      widget.pack.name = titleController.text;
+                      widget.pack.hivePack.title = titleController.text;
 
-
-                    /*List<HiveQuestion> Qst = [];
-                    int cardNo = 0;
-                    globals.questions.forEach((question) =>
-                    {
-                      Qst.add(question.hiveQuestion),
-                      cardNo += 1
-                    });
-
-                    HivePack pck = HivePack(title: titleController.text,
-                        questions: Qst,
-                        enabled: true,
-                        frequency: 2);
-                    Box box = await Hive.openBox("Globals");
-                    if (!(box.get("editbox") == null)) {
-                      List<dynamic> pcks = box.get("packs");
-                      HivePack? removePack = null;
-                      List<HivePack> newPck = [];
-                      pcks.forEach((pack) {
-                        if (!(pack == box.get("editbox"))) {
-                          newPck.add(pack);
-                        }
-                      });
+                      globals.packs.add(widget.pack.hivePack);
+                      Box box = await Hive.box("Globals");
+                      /*Box<List<HivePack>> box = await Hive.box("Globals");
+                      List<HivePack>? _pcks = box.get("packs");
+                      late List<HivePack> pcks;
+                      if(!(_pcks == null)){
+                        pcks = box.get("packs")!;
+                      }else{
+                        pcks = [];
+                      }*/
+                      List<HivePack> pcks = await packsFromHive();
+                      pcks.add(widget.pack.hivePack);
                       box.delete("packs");
-                      box.put("packs", newPck);
+                      box.put("packs", pcks);
+
+
+                      globals.questions = [];
+
+                      ///schedule questions
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => MyHomePage()));
                     }
 
-                    if (box.get("packs") == null) {
-                      List<HivePack> PackList = [pck];
-                      box.put("packs", PackList);
-                    } else {
-                      List PackList = box.get("packs");
-                      List<HivePack> _packList = PackList.cast<HivePack>();
-                      _packList.add(pck);
-                      box.delete("packs");
-                      await box.put("packs", _packList);
-                    }
+                    ///might error cos pcks is dynamic
 
-
-                    if (box.get("titles") == null) {
-                      List<String> _titleList = [titleController.text];
-                      box.put("titles", _titleList);
-                    } else {
-                      List titleList = box.get("titles");
-                      List<String> _titleList = titleList.cast<String>();
-                      _titleList.add(titleController.text);
-                      box.delete("titles");
-                      await box.put("titles", _titleList);
-                    }*/
-                    globals.questions = [];
-
-                    ///schedule questions
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => MyHomePage()));
                   },
                   tooltip: 'Done',
                   child: Icon(Icons.offline_pin)),

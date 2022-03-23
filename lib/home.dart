@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
+import 'package:nea/settings.dart';
 import 'dart:developer' as dev;
 
 import 'globals.dart' as globals;
@@ -50,13 +51,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 Navigator.of(context).pop();
                 globals.notificationsAllowed = await AwesomeNotifications().isNotificationAllowed();
                 setState(() {
+                  dev.log(globals.notificationsAllowed.toString());
                   globals.notificationsAllowed = globals.notificationsAllowed;
                 });
               },
               onOkButtonPressed: () async {
                 Navigator.of(context).pop();
+                dev.log("exec 0");///probs not an issue on mobile
                 await AwesomeNotifications().requestPermissionToSendNotifications();
+                dev.log("exec 1");
                 globals.notificationsAllowed = await AwesomeNotifications().isNotificationAllowed();
+                dev.log("exec 2");
                 setState(() {
                   dev.log(globals.notificationsAllowed.toString());
                   globals.notificationsAllowed = !globals.notificationsAllowed;
@@ -93,6 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
     List<Pack> outPacks = [];
 
     globals.packs.forEach((element) {
+      dev.log("element.title");
       outPacks.add(Pack(enabled: element.enabled, hivePack: element, name: element.title,));
     });
 
@@ -108,6 +114,9 @@ class _MyHomePageState extends State<MyHomePage> {
       Future.delayed(Duration.zero, (){
         requestUserPermission();
       });
+
+
+
     }
 
   }
@@ -136,6 +145,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => CreatePack(pack: Pack(enabled: true, name: "name", hivePack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2),))));
+                },
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: FloatingActionButton(
+                onPressed: (){
+                  Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Settings()));
                 },
               ),
             ),

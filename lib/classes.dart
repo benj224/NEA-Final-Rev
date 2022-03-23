@@ -10,6 +10,22 @@ import 'makequestion.dart';
 part 'classes.g.dart';
 
 
+Future<List<HivePack>> packsFromHive() async{
+  Box box = await Hive.box("Globals");
+  List<dynamic> _pcks = box.get("packs");
+  if (_pcks == null){
+    return [];
+  }
+  List<HivePack> packs = [];
+  _pcks.forEach((element) {
+    packs.add(element);
+  });
+
+  return packs;
+
+}
+
+
 
 
 @HiveType(typeId: 10)

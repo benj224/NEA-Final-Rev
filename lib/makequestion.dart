@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:giffy_dialog/giffy_dialog.dart';
 
 import 'classes.dart';
 import 'globals.dart' as globals;
@@ -148,25 +151,56 @@ class _MakeQuestionState extends State<MakeQuestion> {
             alignment: Alignment.bottomRight,
             child: FloatingActionButton(
                 onPressed: ()async{
-                  widget.question.question = widget.qstCont.text;
-                  widget.question.answers[0].text = widget.ans1Cont.text;
-                  widget.question.answers[1].text = widget.ans2Cont.text;
-                  widget.question.answers[2].text = widget.ans3Cont.text;
-                  widget.question.answers[0].correct = widget.a1corr;
-                  widget.question.answers[1].correct = widget.a2corr;
-                  widget.question.answers[2].correct = widget.a3corr;
+                  bool textChanged = !(widget.qstCont.text == "<question>") & !(widget.ans1Cont == "<ans1>") & !(widget.ans2Cont == "<ans2>") & !(widget.ans3Cont == "<ans3>");
+                  bool hasAnswer = widget.a1corr | widget.a2corr | widget.a3corr;
+                  log(hasAnswer.toString());
+                  log(textChanged.toString());
+                  if(textChanged & hasAnswer){
+                    widget.question.question = widget.qstCont.text;
+                    widget.question.answers[0].text = widget.ans1Cont.text;
+                    widget.question.answers[1].text = widget.ans2Cont.text;
+                    widget.question.answers[2].text = widget.ans3Cont.text;
+                    widget.question.answers[0].correct = widget.a1corr;
+                    widget.question.answers[1].correct = widget.a2corr;
+                    widget.question.answers[2].correct = widget.a3corr;
 
 
-                  widget.question.hiveQuestion.question = widget.qstCont.text;
-                  widget.question.hiveQuestion.answers[0].text = widget.ans1Cont.text;
-                  widget.question.hiveQuestion.answers[1].text = widget.ans2Cont.text;
-                  widget.question.hiveQuestion.answers[2].text = widget.ans3Cont.text;
-                  widget.question.hiveQuestion.answers[0].correct = widget.a1corr;
-                  widget.question.hiveQuestion.answers[1].correct = widget.a2corr;
-                  widget.question.hiveQuestion.answers[2].correct = widget.a3corr;
+                    widget.question.hiveQuestion.question = widget.qstCont.text;
+                    widget.question.hiveQuestion.answers[0].text = widget.ans1Cont.text;
+                    widget.question.hiveQuestion.answers[1].text = widget.ans2Cont.text;
+                    widget.question.hiveQuestion.answers[2].text = widget.ans3Cont.text;
+                    widget.question.hiveQuestion.answers[0].correct = widget.a1corr;
+                    widget.question.hiveQuestion.answers[1].correct = widget.a2corr;
+                    widget.question.hiveQuestion.answers[2].correct = widget.a3corr;
 
-                  globals.newQuestion = widget.question;
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: Pack(enabled: true, hivePack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2), name: "name",))));
+                    globals.newQuestion = widget.question;
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: Pack(enabled: true, hivePack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2), name: "name",))));
+                  }else{
+                    showDialog(
+                        context: context,
+                        builder: (_) =>
+                            NetworkGiffyDialog(
+                              buttonOkText: Text('Allow', style: TextStyle(color: Colors.white)),
+                              onlyOkButton: true,
+                              buttonOkColor: Colors.deepPurple,
+                              image: Image.asset("assets/images/oops.png"),
+                              buttonRadius: 0.0,
+                              title: Text('Information Missing',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 22.0,
+                                      fontWeight: FontWeight.w600)
+                              ),
+                              description: Text('Please make sure all the fields are filled and an answer is chosen',
+                                textAlign: TextAlign.center,
+                              ),
+                              entryAnimation: EntryAnimation.DEFAULT,
+                              onOkButtonPressed: () async {
+                                Navigator.of(context).pop();
+                              },
+                            )
+                    );
+                  }
                 }
             ),
           ),

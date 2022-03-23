@@ -27,14 +27,15 @@ void main() async {
   Hive.registerAdapter(HiveAnswerAdapter());
 
 
-  await Hive.openBox<List<HivePack>>("Globals");
-  dev.log("not set");
+  await Hive.openBox("Globals");
+  /*dev.log("not set");
   Box<List<HivePack>> box = Hive.box("Globals");
   dev.log("set");
   List<HivePack>? _packs = box.get("packs");///erroring here need to go back to casting to hivepack, maby make a function.
   if(!(_packs == null)){
     globals.packs = _packs!;
-  }
+  }*/
+  globals.packs = await packsFromHive();
 
   AwesomeNotifications().removeChannel("awesome_notifications");
   dev.log("got to here");
