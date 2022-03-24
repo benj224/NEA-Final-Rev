@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinbox/material.dart';
+import 'package:nea/classes.dart';
 
 bool mon = true;
 bool tue = true;
@@ -220,6 +221,21 @@ class _SettingsState extends State<Settings> {
               ),
             )
           ),
+
+          Align(
+            child:GestureDetector(
+              onTap: (){
+                sendIt();
+              },
+              child: Material(
+                color: Colors.red,
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );

@@ -109,6 +109,26 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+
+
+    AwesomeNotifications().createdStream.listen((ReceivedNotification notification) {
+      print("Notification created: "+(notification.title ?? notification.body ?? notification.id.toString()));
+    });
+
+    AwesomeNotifications().displayedStream.listen((ReceivedNotification notification) {
+      print("Notification displayed: "+(notification.title ?? notification.body ?? notification.id.toString()));
+    });
+
+    AwesomeNotifications().dismissedStream.listen((ReceivedAction dismissedAction) {
+      print("Notification dismissed: "+(dismissedAction.title ?? dismissedAction.body ?? dismissedAction.id.toString()));
+    });
+
+    AwesomeNotifications().actionStream.listen((ReceivedAction action){
+      print("Action received!");
+      dev.log(action.buttonKeyPressed);///fk yea, use this and correct ans in payload
+
+    });
+
     //check permissions for notification access
     if(!globals.notificationsAllowed){
       Future.delayed(Duration.zero, (){

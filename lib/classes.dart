@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'dart:developer';
 //import 'package:build_runner/build_runner.dart';
 
 import 'globals.dart' as globals;
@@ -23,6 +24,43 @@ Future<List<HivePack>> packsFromHive() async{
 
   return packs;
 
+}
+
+
+void sendIt() async {
+  log("sent");
+  await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 100,
+        channelKey: "awesome_notifications",
+        title: "question",
+        body: "test",
+        //notificationLayout: NotificationLayout.BigPicture,
+        //largeIcon: "https://avidabloga.files.wordpress.com/2012/08/emmemc3b3riadeneilarmstrong3.jpg",
+        //bigPicture: "https://www.dw.com/image/49519617_303.jpg",
+        showWhen: true,
+      ),
+      actionButtons: [
+        NotificationActionButton(
+          key: "a1",
+          label: "ans1",
+          enabled: true,
+          buttonType: ActionButtonType.Default,
+        ),
+        NotificationActionButton(
+          key: "a2",
+          label: "ans2",
+          enabled: true,
+          buttonType: ActionButtonType.Default,
+        ),
+        NotificationActionButton(
+          key: "a3",
+          label: "ans3",
+          enabled: true,
+          buttonType: ActionButtonType.Default,
+        )
+      ],
+  );
 }
 
 

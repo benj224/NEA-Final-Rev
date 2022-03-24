@@ -19,6 +19,20 @@ import 'home.dart';
 
 void main() async {
 
+  bool done = await AwesomeNotifications().initialize(
+    // set the icon to null if you want to use the default app icon
+      null,
+      [
+        NotificationChannel(
+            channelKey: 'awesome_notifications',
+            channelName: 'Basic notifications',
+            channelDescription: 'Notification channel for basic tests',
+            defaultColor: Color(0xFF9D50DD),
+            ledColor: Colors.white)
+      ],
+      debug: true
+  );
+
   await Hive.initFlutter();
 
 
@@ -37,8 +51,6 @@ void main() async {
   }*/
   globals.packs = await packsFromHive();
 
-  AwesomeNotifications().removeChannel("awesome_notifications");
-  dev.log("got to here");
   /*await AwesomeNotifications().initialize(
     // set the icon to null if you want to use the default app icon
       null,
@@ -130,24 +142,6 @@ class MyApp extends StatelessWidget {
       }
     });
 
-
-    AwesomeNotifications().createdStream.listen((ReceivedNotification notification) {
-      print("Notification created: "+(notification.title ?? notification.body ?? notification.id.toString()));
-    });
-
-    AwesomeNotifications().displayedStream.listen((ReceivedNotification notification) {
-      print("Notification displayed: "+(notification.title ?? notification.body ?? notification.id.toString()));
-    });
-
-    AwesomeNotifications().dismissedStream.listen((ReceivedAction dismissedAction) {
-      print("Notification dismissed: "+(dismissedAction.title ?? dismissedAction.body ?? dismissedAction.id.toString()));
-    });
-
-    AwesomeNotifications().actionStream.listen((ReceivedAction action){
-      print("Action received!");
-
-
-    });
 
 
     dev.log("here");
