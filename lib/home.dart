@@ -123,10 +123,28 @@ class _MyHomePageState extends State<MyHomePage> {
       print("Notification dismissed: "+(dismissedAction.title ?? dismissedAction.body ?? dismissedAction.id.toString()));
     });
 
-    AwesomeNotifications().actionStream.listen((ReceivedAction action){
+    AwesomeNotifications().actionStream.listen((ReceivedAction action) async {
       print("Action received!");
       dev.log(action.buttonKeyPressed);///fk yea, use this and correct ans in payload
 
+
+      List<HivePack> packList = await packsFromHive();
+      packList.forEach((pack) {
+        if(pack.title == action.payload!["name"]){
+          pack.questions.forEach((question) {
+            if(question.question == action.payload!["question"]){
+              if(((action.payload!["correct"] == "0") & (action.buttonKeyPressed == "a1")) | ((action.payload!["correct"] == "1") & (action.buttonKeyPressed == "a2")) | (action.payload!["correct"] == "2") & (action.buttonKeyPressed == "a3")){
+                question.pastAnswers = correct(question.pastAnswers);
+                question.attempted += 1;
+                question.correct += 1;
+              }
+            }else{
+              question.pastAnswers = incorrect(question.pastAnswers);
+              question.attempted += 1;
+            }
+          });
+        }
+      });
     });
 
     //check permissions for notification access
@@ -134,11 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
       Future.delayed(Duration.zero, (){
         requestUserPermission();
       });
-
-
-
     }
-
   }
 
 

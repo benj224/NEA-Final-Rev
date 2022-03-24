@@ -1,7 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'dart:developer';
+import 'dart:developer' as dev;
 //import 'package:build_runner/build_runner.dart';
 
 import 'globals.dart' as globals;
@@ -27,8 +29,107 @@ Future<List<HivePack>> packsFromHive() async{
 }
 
 
+void sendNotification(int hour, int minute, String question, String ans1, String ans2, String ans3, String correct, String packName) async {
+  dev.log("is executing");
+
+  if(!globals.notificationsAllowed){
+    await globals.requestUserPermission();
+  }
+
+  if(!globals.notificationsAllowed){
+    dev.log("was false");
+    return;
+  }
+  await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 100,
+        channelKey: "awesome_notifications",
+        title: question,
+        body: "test",
+        payload: {"question": question, "correct": correct, "name": packName},
+        showWhen: true,
+      ),
+      actionButtons: [
+        NotificationActionButton(
+          key: "a1",
+          label: ans1,
+          enabled: true,
+          buttonType: ActionButtonType.Default,
+        ),
+        NotificationActionButton(
+          key: "a2",
+          label: ans2,
+          enabled: true,
+          buttonType: ActionButtonType.Default,
+        ),
+        NotificationActionButton(
+          key: "a3",
+          label: ans3,
+          enabled: true,
+          buttonType: ActionButtonType.Default,
+        )
+      ],
+      schedule: NotificationCalendar.fromDate(date: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, hour, minute))
+  );
+}
+
+
+void scheduleQuestions() async{
+  var rng = Random();
+  Box box = await Hive.openBox("Globals");
+  List<dynamic> pcks = box.get("packs");
+  dev.log("length of packs");
+
+  List<HivePack> _packList = pcks.cast<HivePack>();
+  dev.log(_packList.length.toString());
+  _packList.forEach((pack) {
+    List<HiveQuestion> qstList = [];
+    dev.log("question list length");
+    dev.log(pack.questions.length.toString());
+    pack.questions.forEach((question) {
+      dev.log(question.question);
+      int score = 0;
+      for(int i = 0; i < 6; i++){
+        dev.log("boom");
+        score += question.pastAnswers[i] * 6;
+      }
+      dev.log("score: ");
+      dev.log(score.toString());
+      for(int n = 0; n < score; n++){
+        dev.log("pow");
+        qstList.add(question);
+      }
+    });
+    double hourIndex = 14/pack.frequency;
+    for(int x = 0; x < pack.frequency; x++){
+      HiveQuestion qst = qstList[0];
+      if(qstList.length > 1){
+        HiveQuestion qst = qstList.removeAt(rng.nextInt(qstList.length)-1);
+      }else{
+        HiveQuestion qst = qstList.removeAt(0);
+      }
+
+      String corr = "";
+
+      if(qst.answers[0].correct){
+        corr = "0";
+      }if(qst.answers[1].correct){
+        corr = "1";
+      }if(qst.answers[2].correct){
+        corr = "2";
+      }
+
+
+      dev.log("scheduled notificatons");
+      //sendNotification(hours, mins, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text);
+      sendNotification(DateTime.now().hour, DateTime.now().minute + 1, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
+    }
+  });
+}
+
+
 void sendIt() async {
-  log("sent");
+  dev.log("sent");
   await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: 100,
@@ -380,4 +481,23 @@ class _PackState extends State<Pack>{
       ),
     );
   }
+}
+
+
+List<int> correct(List<int> past){
+  for( var i = 1; i >= 5; i ++){
+    past[i-1] = past[i];
+  }
+  past[5] = 0;
+
+  return past;
+}
+
+List<int> incorrect(List<int> past){
+  for( var i = 1; i >= 5; i ++){
+    past[i-1] = past[i];
+  }
+  past[5] = 2;
+
+  return past;
 }

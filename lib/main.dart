@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cron/cron.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
@@ -66,6 +67,14 @@ void main() async {
   );
 
   dev.log("done");*/
+
+
+  var cron = new Cron();
+  cron.schedule(Schedule.parse("* 1 * * *"), () async {
+    scheduleQuestions();
+    await Future.delayed(Duration(seconds: 40));
+    //await cron.close();
+  });
 
 
 

@@ -38,6 +38,7 @@ dependencies:
   giffy_dialog: ^1.8.0
   flutter_spinbox: ^0.8.0
   awesome_notifications: ^0.6.21
+  cron: ^0.4.1
 
 
 dev_dependencies:
