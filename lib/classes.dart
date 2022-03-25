@@ -131,7 +131,7 @@ void scheduleQuestions() async{
 void sendIt() async {
   dev.log("sent");
   HiveQuestion qst = HiveQuestion(question: "<question>", cardNo: 0, answers: [
-    HiveAnswer(text: "<Ans1>", correct: false),
+    HiveAnswer(text: "<Ans1>", correct: true),
     HiveAnswer(text: "<Ans2>", correct: false),
     HiveAnswer(text: "<Ans3>", correct: false),
   ], attempted: 0, correct: 0, pastAnswers: [1,1,1,1,1,1], hivePack: HivePack(title: "title", questions: [], enabled: true, frequency: 10));
