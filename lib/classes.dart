@@ -130,7 +130,26 @@ void scheduleQuestions() async{
 
 void sendIt() async {
   dev.log("sent");
-  await AwesomeNotifications().createNotification(
+  HiveQuestion qst = HiveQuestion(question: "<question>", cardNo: 0, answers: [
+    HiveAnswer(text: "<Ans1>", correct: false),
+    HiveAnswer(text: "<Ans2>", correct: false),
+    HiveAnswer(text: "<Ans3>", correct: false),
+  ], attempted: 0, correct: 0, pastAnswers: [1,1,1,1,1,1], hivePack: HivePack(title: "title", questions: [], enabled: true, frequency: 10));
+  HivePack pack = HivePack(title: "title", questions: [qst], enabled: true, frequency: 10);
+  String corr = "";
+
+  if(qst.answers[0].correct){
+    corr = "0";
+  }if(qst.answers[1].correct){
+    corr = "1";
+  }if(qst.answers[2].correct){
+    corr = "2";
+  }
+
+///try this
+  sendNotification(DateTime.now().hour, DateTime.now().minute + 1, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
+
+  /*await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: 100,
         channelKey: "awesome_notifications",
@@ -161,7 +180,7 @@ void sendIt() async {
           buttonType: ActionButtonType.Default,
         )
       ],
-  );
+  );*/
 }
 
 

@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinbox/material.dart';
 import 'package:nea/classes.dart';
 
+import 'home.dart';
+
 bool mon = true;
 bool tue = true;
 bool wed = true;
@@ -234,6 +236,18 @@ class _SettingsState extends State<Settings> {
                   height: 20,
                 ),
               ),
+            ),
+          )
+        ],
+      ),
+      floatingActionButton: Stack(
+        children: [
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: FloatingActionButton(
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+              }
             ),
           )
         ],
