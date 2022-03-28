@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 dev.log("exec 2");
                 setState(() {
                   dev.log(globals.notificationsAllowed.toString());
-                  globals.notificationsAllowed = !globals.notificationsAllowed;
+                  globals.notificationsAllowed = globals.notificationsAllowed;
                   dev.log(globals.notificationsAllowed.toString());
                 });
               },
@@ -110,42 +110,46 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
 
-
-    AwesomeNotifications().createdStream.listen((ReceivedNotification notification) {
-      print("Notification created: "+(notification.title ?? notification.body ?? notification.id.toString()));
-    });
-
-    AwesomeNotifications().displayedStream.listen((ReceivedNotification notification) {
-      print("Notification displayed: "+(notification.title ?? notification.body ?? notification.id.toString()));
-    });
-
-    AwesomeNotifications().dismissedStream.listen((ReceivedAction dismissedAction) {
-      print("Notification dismissed: "+(dismissedAction.title ?? dismissedAction.body ?? dismissedAction.id.toString()));
-    });
-
-    AwesomeNotifications().actionStream.listen((ReceivedAction action) async {
-      print("Action received!");
-      dev.log(action.buttonKeyPressed);///fk yea, use this and correct ans in payload
-
-
-      List<HivePack> packList = await packsFromHive();
-      packList.forEach((pack) {
-        if(pack.title == action.payload!["name"]){
-          pack.questions.forEach((question) {
-            if(question.question == action.payload!["question"]){
-              if(((action.payload!["correct"] == "0") & (action.buttonKeyPressed == "a1")) | ((action.payload!["correct"] == "1") & (action.buttonKeyPressed == "a2")) | (action.payload!["correct"] == "2") & (action.buttonKeyPressed == "a3")){
-                question.pastAnswers = correct(question.pastAnswers);
-                question.attempted += 1;
-                question.correct += 1;
-              }
-            }else{
-              question.pastAnswers = incorrect(question.pastAnswers);
-              question.attempted += 1;
-            }
-          });
-        }
+    if(!(globals.listening)){
+      AwesomeNotifications().createdStream.listen((ReceivedNotification notification) {
+        print("Notification created: "+(notification.title ?? notification.body ?? notification.id.toString()));
       });
-    });
+
+      AwesomeNotifications().displayedStream.listen((ReceivedNotification notification) {
+        print("Notification displayed: "+(notification.title ?? notification.body ?? notification.id.toString()));
+      });
+
+      AwesomeNotifications().dismissedStream.listen((ReceivedAction dismissedAction) {
+        print("Notification dismissed: "+(dismissedAction.title ?? dismissedAction.body ?? dismissedAction.id.toString()));
+      });
+
+      AwesomeNotifications().actionStream.listen((ReceivedAction action) async {
+        print("Action received!");
+        dev.log(action.buttonKeyPressed);///fk yea, use this and correct ans in payload
+
+
+        List<HivePack> packList = await packsFromHive();
+        packList.forEach((pack) {
+          if(pack.title == action.payload!["name"]){
+            pack.questions.forEach((question) {
+              if(question.question == action.payload!["question"]){
+                if(((action.payload!["correct"] == "0") & (action.buttonKeyPressed == "a1")) | ((action.payload!["correct"] == "1") & (action.buttonKeyPressed == "a2")) | (action.payload!["correct"] == "2") & (action.buttonKeyPressed == "a3")){
+                  question.pastAnswers = correct(question.pastAnswers);
+                  question.attempted += 1;
+                  question.correct += 1;
+                }
+              }else{
+                question.pastAnswers = incorrect(question.pastAnswers);
+                question.attempted += 1;
+              }
+            });
+          }
+        });
+      });
+    }
+
+
+
 
     //check permissions for notification access
     if(!globals.notificationsAllowed){
