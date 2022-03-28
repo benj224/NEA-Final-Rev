@@ -149,8 +149,9 @@ class _MakeQuestionState extends State<MakeQuestion> {
       floatingActionButton: Stack(
         children: [
           Align(
-            alignment: Alignment.bottomRight,
+            alignment: FractionalOffset(0.9, 0.95),
             child: FloatingActionButton(
+              child: Icon(Icons.done_rounded),
                 onPressed: ()async{
                   bool textChanged = !(widget.qstCont.text == "<question>") & !(widget.ans1Cont == "<ans1>") & !(widget.ans2Cont == "<ans2>") & !(widget.ans3Cont == "<ans3>");
                   bool hasAnswer = widget.a1corr | widget.a2corr | widget.a3corr;
@@ -183,7 +184,7 @@ class _MakeQuestionState extends State<MakeQuestion> {
                             NetworkGiffyDialog(
                               buttonOkText: Text('Allow', style: TextStyle(color: Colors.white)),
                               onlyOkButton: true,
-                              buttonOkColor: Colors.deepPurple,
+                              buttonOkColor: Colors.blue,
                               image: Image.asset("assets/images/oops.png"),
                               buttonRadius: 0.0,
                               title: Text('Information Missing',
@@ -206,8 +207,9 @@ class _MakeQuestionState extends State<MakeQuestion> {
             ),
           ),
           Align(
-            alignment: Alignment.bottomLeft,
+            alignment: FractionalOffset(0.1, 0.95),
             child: FloatingActionButton(
+              child: Icon(Icons.arrow_back_rounded),
                 onPressed: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: Pack(enabled: true, hivePack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2), name: "name",))));
                 }

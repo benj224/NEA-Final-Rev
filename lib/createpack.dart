@@ -67,8 +67,9 @@ class _CreatePackState extends State<CreatePack> {
         floatingActionButton: Stack(
           children: [
             Align(
-              alignment: Alignment.bottomRight,
+              alignment: FractionalOffset(0.9, 0.95),
               child: FloatingActionButton(
+                child: Icon(Icons.add),
                   onPressed: () {
                     setState(() {
                       /// add new page for creating question instead.
@@ -96,11 +97,12 @@ class _CreatePackState extends State<CreatePack> {
                     });
                   },
                   tooltip: 'Add Item',
-                  child: Icon(Icons.add)),
+              ),
             ),
             Align(
-              alignment: Alignment.bottomLeft,
+              alignment: FractionalOffset(0.1, 0.95),
               child: FloatingActionButton(
+                child: Icon(Icons.done_rounded),
                   onPressed: () async {
                     if(globals.questions.length == 0){
                       showDialog(
@@ -152,11 +154,12 @@ class _CreatePackState extends State<CreatePack> {
 
                   },
                   tooltip: 'Done',
-                  child: Icon(Icons.offline_pin)),
+              ),
             ),
             Align(
-              alignment: Alignment.bottomCenter,
+              alignment: FractionalOffset(0.5, 0.95),
               child: FloatingActionButton(
+                child: Icon(Icons.delete_rounded),
                 onPressed: () async {
                   Box box = await Hive.openBox("Globals");
                   List<dynamic> pcks = box.get("packs");

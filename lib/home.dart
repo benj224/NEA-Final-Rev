@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
@@ -111,6 +112,9 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
 
     if(!(globals.listening)){
+
+      globals.listening = true;
+
       AwesomeNotifications().createdStream.listen((ReceivedNotification notification) {
         print("Notification created: "+(notification.title ?? notification.body ?? notification.id.toString()));
       });
@@ -137,18 +141,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   question.pastAnswers = correct(question.pastAnswers);
                   question.attempted += 1;
                   question.correct += 1;
+                }else{
+                  question.pastAnswers = incorrect(question.pastAnswers);
+                  question.attempted += 1;
                 }
-              }else{
-                question.pastAnswers = incorrect(question.pastAnswers);
-                question.attempted += 1;
               }
             });
           }
         });
       });
     }
-
-
 
 
     //check permissions for notification access
@@ -158,6 +160,29 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     }
   }
+
+  void searchPacks(String query){
+    List<HivePack> newList = [];
+    List<HivePack> backup = [];
+    backup.addAll(globals.packs);
+    globals.packs.clear();
+    if(query.isNotEmpty){
+      globals.packs.forEach((element) {
+        if(element.title == query){
+          newList.add(element);
+        }
+      });
+      setState(() {
+        globals.packs = newList;
+      });
+      return;
+    }else{
+      globals.packs.clear();
+      globals.packs.addAll(backup);
+    }
+  }
+
+  TextEditingController editingController = TextEditingController();
 
 
   @override
@@ -169,18 +194,42 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
 
         body: Center(
-          child: Container(
-            height: 600,
-            child: ListView(
-              children: getPacks(),
-            ),
-          ),
+          child: Stack(
+            children: <Widget>[
+
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  onChanged: (value) {
+                    searchPacks(value);
+                  },
+                  controller: editingController,
+                  decoration: InputDecoration(
+                      labelText: "Search",
+                      hintText: "Search",
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+                ),
+              ),
+
+              Container(
+                height: 600,
+                child: ListView(
+                  children: getPacks(),
+                ),
+              ),
+            ],
+          )
+
+
         ),
         floatingActionButton: Stack(
           children: [
             Align(
-              alignment: Alignment.bottomRight,
+              alignment: FractionalOffset(0.9, 0.95),
               child: FloatingActionButton(
+                child: Icon(Icons.add),
                 onPressed: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => CreatePack(pack: Pack(enabled: true, name: "name", hivePack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2),))));
@@ -188,8 +237,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             Align(
-              alignment: Alignment.bottomLeft,
+              alignment: FractionalOffset(0.1, 0.95),
               child: FloatingActionButton(
+                child: Icon(Icons.settings),
                 onPressed: (){
                   Navigator.push(context,
                   MaterialPageRoute(builder: (context) => Settings()));

@@ -243,8 +243,9 @@ class _SettingsState extends State<Settings> {
       floatingActionButton: Stack(
         children: [
           Align(
-            alignment: Alignment.bottomLeft,
+            alignment: FractionalOffset(0.1, 0.95),
             child: FloatingActionButton(
+              child: Icon(Icons.home_rounded),
               onPressed: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
               }
