@@ -36,6 +36,8 @@ class _CreatePackState extends State<CreatePack> {
       log(globals.newQuestion!.question);
       globals.newQuestion = null;
     }
+
+    titleController.text = widget.pack.name;
   }
 
   List<Question> loadQuestions(){
@@ -62,136 +64,148 @@ class _CreatePackState extends State<CreatePack> {
         ),
           automaticallyImplyLeading: false,
         ),
-        body: ListView(children: loadQuestions()),
-        // add items to the to-do list
-        floatingActionButton: Stack(
-          alignment: Alignment.center,
+        body: Stack(
           children: [
-            Align(
-              alignment: FractionalOffset(0.9, 0.95),
-              child: Padding(
-                padding: new EdgeInsets.all(10.0),
-                child: FloatingActionButton(
-                  child: Icon(Icons.add),
-                  onPressed: () {
-                    setState(() {
-                      /// add new page for creating question instead.
-                      Navigator.push(
-                          context, MaterialPageRoute(builder: (context) =>
-                          MakeQuestion(question: Question(
-                            hiveQuestion: HiveQuestion(question: "<question>",
-                                cardNo: 0,
-                                answers: [
-                                  HiveAnswer(text: "<Ans1>", correct: false),
-                                  HiveAnswer(text: "<Ans2>", correct: false),
-                                  HiveAnswer(text: "<Ans3>", correct: false),
-                                ],
-                                attempted: 0,
-                                correct: 0,
-                                pastAnswers: [1, 1, 1, 1, 1, 1],
-                                hivePack: widget.pack.hivePack),
-                            answers: [
-                              HiveAnswer(text: "<Ans1>", correct: false),
-                              HiveAnswer(text: "<Ans2>", correct: false),
-                              HiveAnswer(text: "<Ans3>", correct: false),
-                            ],
-                            cardNo: 0,
-                            question: "<question>",),)));
-                    });
-                  },
-                  tooltip: 'Add Item',
+            ListView(children: loadQuestions()),
+
+
+
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Align(
+                  alignment: FractionalOffset(0.9, 0.95),
+                  child: FloatingActionButton(
+                    child: Icon(Icons.add),
+                    onPressed: () {
+                      setState(() {
+                        /// add new page for creating question instead.
+                        Navigator.push(
+                            context, MaterialPageRoute(builder: (context) =>
+                            MakeQuestion(question: Question(
+                              hiveQuestion: HiveQuestion(question: "<question>",
+                                  cardNo: 0,
+                                  answers: [
+                                    HiveAnswer(text: "<Ans1>", correct: false),
+                                    HiveAnswer(text: "<Ans2>", correct: false),
+                                    HiveAnswer(text: "<Ans3>", correct: false),
+                                  ],
+                                  attempted: 0,
+                                  correct: 0,
+                                  pastAnswers: [1, 1, 1, 1, 1, 1],
+                                  hivePack: widget.pack.hivePack),
+                              answers: [
+                                HiveAnswer(text: "<Ans1>", correct: false),
+                                HiveAnswer(text: "<Ans2>", correct: false),
+                                HiveAnswer(text: "<Ans3>", correct: false),
+                              ],
+                              cardNo: 0,
+                              question: "<question>",),)));
+                      });
+                    },
+                    tooltip: 'Add Item',
+                  ),
                 ),
-              )
-            ),
 
 
-            Align(
-              alignment: FractionalOffset(0.1, 0.95),
-              child: FloatingActionButton(
-                child: Icon(Icons.done_rounded),
-                  onPressed: () async {
-                    if(globals.questions.length == 0){
-                      showDialog(
-                          context: context,
-                          builder: (_) =>
-                              NetworkGiffyDialog(
-                                buttonOkText: Text('Allow', style: TextStyle(color: Colors.white)),
-                                buttonOkColor: Colors.deepPurple,
-                                onlyOkButton: true,
-                                buttonRadius: 0.0,
-                                image: Image.asset("assets/images/oops.png"),
-                                title: Text('No Questions',
+                Align(
+                  alignment: FractionalOffset(0.1, 0.95),
+                  child: FloatingActionButton(
+                    child: Icon(Icons.done_rounded),
+                    onPressed: () async {
+                      if(globals.questions.length == 0){
+                        showDialog(
+                            context: context,
+                            builder: (_) =>
+                                NetworkGiffyDialog(
+                                  buttonOkText: Text('Allow', style: TextStyle(color: Colors.white)),
+                                  buttonOkColor: Colors.deepPurple,
+                                  onlyOkButton: true,
+                                  buttonRadius: 0.0,
+                                  image: Image.asset("assets/images/oops.png"),
+                                  title: Text('No Questions',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 22.0,
+                                          fontWeight: FontWeight.w600)
+                                  ),
+                                  description: Text('Please add a question to this pack to save it.',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 22.0,
-                                        fontWeight: FontWeight.w600)
-                                ),
-                                description: Text('Please add a question to this pack to save it.',
-                                  textAlign: TextAlign.center,
-                                ),
-                                entryAnimation: EntryAnimation.DEFAULT,
-                                onOkButtonPressed: () async {
-                                  Navigator.of(context).pop();
-                                },
-                              )
-                      );
-                    }else{
+                                  ),
+                                  entryAnimation: EntryAnimation.DEFAULT,
+                                  onOkButtonPressed: () async {
+                                    Navigator.of(context).pop();
+                                  },
+                                )
+                        );
+                      }else{
 
-                      widget.pack.name = titleController.text;
-                      widget.pack.hivePack.title = titleController.text;
+                        widget.pack.name = titleController.text;
+                        widget.pack.hivePack.title = titleController.text;
 
-                      globals.packs.add(widget.pack.hivePack);
-                      Box box = await Hive.box("Globals");
+                        List<HivePack> pcks = await packsFromHive();
 
-                      List<HivePack> pcks = await packsFromHive();
-                      pcks.add(widget.pack.hivePack);
-                      box.delete("packs");
-                      box.put("packs", pcks);
+                        if(!pcks.contains(widget.pack.hivePack)){
+                          globals.packs.add(widget.pack.hivePack);
+                          Box box = await Hive.box("Globals");
 
 
-                      globals.questions = [];
+                          pcks.add(widget.pack.hivePack);
+                          box.delete("packs");
+                          box.put("packs", pcks);
+                        }else{
+                          globals.packs.add(widget.pack.hivePack);
+                          log(widget.pack.hivePack.title);
+                        }
 
-                      ///schedule questions
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => MyHomePage()));
-                    }
 
-                    ///might error cos pcks is dynamic
 
-                  },
-                  tooltip: 'Done',
-              ),
-            ),
-            Align(
-              alignment: FractionalOffset(0.5, 0.95),
-              child: Container(
-                alignment: Alignment.center,
-                child: FloatingActionButton(
-                  child: Icon(Icons.delete_rounded),
-                  onPressed: () async {
-                    Box box = await Hive.openBox("Globals");
-                    List<dynamic> pcks = box.get("packs");
-                    List<HivePack> newPcks = [];
-                    //List<Widget> newDisplayPacks = [];
-                    pcks.forEach((pack) {
-                      if (!(pack.title == widget.pack.name)) {
-                        newPcks.add(pack);
-                        //newDisplayPacks.add(PackDisplay(name: pack.title, hivePack: pack));
+
+                        log(pcks.length.toString());
+
+                        globals.questions = [];
+
+                        ///schedule questions
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => MyHomePage()));
                       }
-                    });
-                    box.delete("packs");
-                    box.put("packs", newPcks);
 
-                    widget.pack.deleteSelf();
+                      ///might error cos pcks is dynamic
 
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => MyHomePage()));
-                  },
+                    },
+                    tooltip: 'Done',
+                  ),
                 ),
-              )
+                Align(
+                    alignment: FractionalOffset(0.5, 0.95),
+                      child: FloatingActionButton(
+                        child: Icon(Icons.delete_rounded),
+                        onPressed: () async {
+                          Box box = await Hive.openBox("Globals");
+                          List<dynamic> pcks = box.get("packs");
+                          List<HivePack> newPcks = [];
+                          //List<Widget> newDisplayPacks = [];
+                          pcks.forEach((pack) {
+                            if (!(pack.title == widget.pack.name)) {
+                              newPcks.add(pack);
+                              //newDisplayPacks.add(PackDisplay(name: pack.title, hivePack: pack));
+                            }
+                          });
+                          box.delete("packs");
+                          box.put("packs", newPcks);
+
+                          widget.pack.deleteSelf();
+
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => MyHomePage()));
+                        },
+                      ),
+                )
+              ],
             )
           ],
         )
+        // add items to the to-do list
     );
   }
 }

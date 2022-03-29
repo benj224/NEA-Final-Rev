@@ -28,6 +28,25 @@ Future<List<HivePack>> packsFromHive() async{
 
 }
 
+void deleteFromHive(HivePack pack) async {
+  Box box = await Hive.box("Globals");
+  List<dynamic> _pcks = box.get("packs");
+  if (_pcks == null){
+    return;
+  }
+  List<HivePack> pcks = _pcks.cast<HivePack>();
+
+  List<HivePack> newList = [];
+  pcks.forEach((element) {
+    if(element.title != pack.title){
+      newList.add(element);
+    }
+  });
+
+  box.delete("packs");
+  box.put("packs", newList);
+}
+
 
 void sendNotification(int hour, int minute, String question, String ans1, String ans2, String ans3, String correct, String packName) async {
   dev.log("is executing");
