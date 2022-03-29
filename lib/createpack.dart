@@ -65,11 +65,14 @@ class _CreatePackState extends State<CreatePack> {
         body: ListView(children: loadQuestions()),
         // add items to the to-do list
         floatingActionButton: Stack(
+          alignment: Alignment.center,
           children: [
             Align(
               alignment: FractionalOffset(0.9, 0.95),
-              child: FloatingActionButton(
-                child: Icon(Icons.add),
+              child: Padding(
+                padding: new EdgeInsets.all(10.0),
+                child: FloatingActionButton(
+                  child: Icon(Icons.add),
                   onPressed: () {
                     setState(() {
                       /// add new page for creating question instead.
@@ -97,8 +100,11 @@ class _CreatePackState extends State<CreatePack> {
                     });
                   },
                   tooltip: 'Add Item',
-              ),
+                ),
+              )
             ),
+
+
             Align(
               alignment: FractionalOffset(0.1, 0.95),
               child: FloatingActionButton(
@@ -158,28 +164,31 @@ class _CreatePackState extends State<CreatePack> {
             ),
             Align(
               alignment: FractionalOffset(0.5, 0.95),
-              child: FloatingActionButton(
-                child: Icon(Icons.delete_rounded),
-                onPressed: () async {
-                  Box box = await Hive.openBox("Globals");
-                  List<dynamic> pcks = box.get("packs");
-                  List<HivePack> newPcks = [];
-                  //List<Widget> newDisplayPacks = [];
-                  pcks.forEach((pack) {
-                    if (!(pack.title == widget.pack.name)) {
-                      newPcks.add(pack);
-                      //newDisplayPacks.add(PackDisplay(name: pack.title, hivePack: pack));
-                    }
-                  });
-                  box.delete("packs");
-                  box.put("packs", newPcks);
+              child: Container(
+                alignment: Alignment.center,
+                child: FloatingActionButton(
+                  child: Icon(Icons.delete_rounded),
+                  onPressed: () async {
+                    Box box = await Hive.openBox("Globals");
+                    List<dynamic> pcks = box.get("packs");
+                    List<HivePack> newPcks = [];
+                    //List<Widget> newDisplayPacks = [];
+                    pcks.forEach((pack) {
+                      if (!(pack.title == widget.pack.name)) {
+                        newPcks.add(pack);
+                        //newDisplayPacks.add(PackDisplay(name: pack.title, hivePack: pack));
+                      }
+                    });
+                    box.delete("packs");
+                    box.put("packs", newPcks);
 
-                  widget.pack.deleteSelf();
+                    widget.pack.deleteSelf();
 
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => MyHomePage()));
-                },
-              ),
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => MyHomePage()));
+                  },
+                ),
+              )
             )
           ],
         )

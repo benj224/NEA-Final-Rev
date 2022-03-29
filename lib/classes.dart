@@ -459,6 +459,7 @@ class _PackState extends State<Pack>{
       onDoubleTap: () async{
         Box box = await Hive.openBox("Globals");
         await box.put("editbox", widget.hivePack);
+        widget.deleteSelf();
         Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: widget)));
       },
       child: Material(

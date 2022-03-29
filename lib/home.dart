@@ -214,40 +214,39 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
 
               Container(
-                height: 600,
-                child: ListView(
-                  children: getPacks(),
+                height: MediaQuery.of(context).size.width,
+                child: Stack(
+                  children: [
+                    ListView(
+                      children: getPacks(),
+                    ),
+
+                    Align(
+                        alignment: FractionalOffset(0.9, 0.95),
+                          child: FloatingActionButton(
+                            child: Icon(Icons.add),
+                            onPressed: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) => CreatePack(pack: Pack(enabled: true, name: "name", hivePack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2),))));
+                            },
+                        )
+                    ),
+                    Align(
+                      alignment: FractionalOffset(0.1, 0.95),
+                      child: FloatingActionButton(
+                        child: Icon(Icons.settings),
+                        onPressed: (){
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => Settings()));
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           )
-
-
         ),
-        floatingActionButton: Stack(
-          children: [
-            Align(
-              alignment: FractionalOffset(0.9, 0.95),
-              child: FloatingActionButton(
-                child: Icon(Icons.add),
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => CreatePack(pack: Pack(enabled: true, name: "name", hivePack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2),))));
-                },
-              ),
-            ),
-            Align(
-              alignment: FractionalOffset(0.1, 0.95),
-              child: FloatingActionButton(
-                child: Icon(Icons.settings),
-                onPressed: (){
-                  Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => Settings()));
-                },
-              ),
-            ),
-          ],
-        )
     );
   }
 }
