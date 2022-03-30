@@ -29,6 +29,7 @@ class _CreatePackState extends State<CreatePack> {
   void initState() {
     super.initState();
     globals.questions = widget.pack.hivePack.questions;
+    /// add something for new pack check
 
     if(!(globals.newQuestion == null)){
       globals.questions.add(globals.newQuestion!.hiveQuestion);
@@ -36,7 +37,6 @@ class _CreatePackState extends State<CreatePack> {
       log(globals.newQuestion!.question);
       globals.newQuestion = null;
     }
-
     titleController.text = widget.pack.name;
   }
 
@@ -80,6 +80,9 @@ class _CreatePackState extends State<CreatePack> {
                     onPressed: () {
                       setState(() {
                         /// add new page for creating question instead.
+                        widget.pack.name = titleController.text;
+                        widget.pack.hivePack.title = titleController.text;
+                        globals.newPack = widget.pack;
                         Navigator.push(
                             context, MaterialPageRoute(builder: (context) =>
                             MakeQuestion(question: Question(
