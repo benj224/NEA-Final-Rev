@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -110,6 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+
 
     if(!(globals.listening)){
 

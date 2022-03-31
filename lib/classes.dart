@@ -359,9 +359,10 @@ class _QuestionState extends State<Question>{
       },
       onDoubleTap: (){
         ///push to question creator with question
+        globals.questions.removeWhere((element) => element.question == widget.question);
         Navigator.push(context, MaterialPageRoute(builder: (context) => MakeQuestion(question: widget)));
         ///delete question
-        globals.questions.remove(widget);
+        
       },
       child: Material(
         color: confidence(),
@@ -436,9 +437,6 @@ class Pack extends StatefulWidget{
   @override
   _PackState createState() => _PackState();
 
-  void deleteSelf() {
-    globals.packs.removeWhere((pack) => pack.title == this.name);
-  }
 }
 
 class _PackState extends State<Pack>{
@@ -476,10 +474,10 @@ class _PackState extends State<Pack>{
         });
       },
       onDoubleTap: () async{
-        Box box = await Hive.openBox("Globals");
-        await box.put("editbox", widget.hivePack);
-        widget.deleteSelf();
+        globals.packs.removeWhere((element) => element.title == widget.name);
         Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: widget)));
+
+        dev.log("here 3");
       },
       child: Material(
         elevation: 5,

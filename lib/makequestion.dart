@@ -215,6 +215,15 @@ class _MakeQuestionState extends State<MakeQuestion> {
             child: FloatingActionButton(
               child: Icon(Icons.arrow_back_rounded),
                 onPressed: (){
+                  Navigator.pop(context);
+                }
+            ),
+          ),
+          Align(
+            alignment: FractionalOffset(0.5, 0.95),
+            child: FloatingActionButton(
+                child: Icon(Icons.delete_rounded),
+                onPressed: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: Pack(enabled: true, hivePack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2), name: "name",))));
                 }
             ),

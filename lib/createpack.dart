@@ -147,8 +147,10 @@ class _CreatePackState extends State<CreatePack> {
                         widget.pack.hivePack.title = titleController.text;
 
                         List<HivePack> pcks = await packsFromHive();
+                        log("didnt crash here");
 
                         if(!pcks.contains(widget.pack.hivePack)){
+
                           globals.packs.add(widget.pack.hivePack);
                           Box box = await Hive.box("Globals");
 
@@ -156,7 +158,10 @@ class _CreatePackState extends State<CreatePack> {
                           pcks.add(widget.pack.hivePack);
                           box.delete("packs");
                           box.put("packs", pcks);
+
+
                         }else{
+
                           globals.packs.add(widget.pack.hivePack);
                           log(widget.pack.hivePack.title);
                         }
@@ -164,7 +169,7 @@ class _CreatePackState extends State<CreatePack> {
 
 
 
-                        log(pcks.length.toString());
+                       // log(pcks.length.toString());
 
                         globals.questions = [];
 
@@ -197,7 +202,7 @@ class _CreatePackState extends State<CreatePack> {
                           box.delete("packs");
                           box.put("packs", newPcks);
 
-                          widget.pack.deleteSelf();
+                          globals.packs.removeWhere((element) => element.title == widget.pack.name);
 
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) => MyHomePage()));
