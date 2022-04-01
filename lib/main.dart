@@ -20,7 +20,7 @@ import 'home.dart';
 
 void main() async {
 
-  bool done = await AwesomeNotifications().initialize(
+  /*bool done = await AwesomeNotifications().initialize(
     // set the icon to null if you want to use the default app icon
       null,
       [
@@ -32,7 +32,7 @@ void main() async {
             ledColor: Colors.white)
       ],
       debug: true
-  );
+  );*/
 
   await Hive.initFlutter();
 

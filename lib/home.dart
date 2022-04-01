@@ -197,11 +197,11 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
 
         body: Center(
-          child: Stack(
+          child: Column(
             children: <Widget>[
 
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              SizedBox(
+                height: 80,
                 child: TextField(
                   onChanged: (value) {
                     searchPacks(value);
@@ -216,8 +216,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
 
+
               Container(
-                height: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height - 136,
                 child: Stack(
                   children: [
                     ListView(
