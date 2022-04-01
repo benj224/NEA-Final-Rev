@@ -70,8 +70,9 @@ void main() async {
 
 
   var cron = new Cron();
-  cron.schedule(Schedule.parse("* 1 * * *"), () async {
+  cron.schedule(Schedule.parse("*/3 * * * *"), () async {
     scheduleQuestions();
+    dev.log("cron called");
     await Future.delayed(Duration(seconds: 40));
     //await cron.close();
   });

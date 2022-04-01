@@ -98,6 +98,7 @@ void scheduleQuestions() async{
   Box box = await Hive.openBox("Globals");
   List<dynamic> pcks = box.get("packs");
   dev.log("length of packs");
+  dev.log(pcks.length.toString());
 
   List<HivePack> _packList = pcks.cast<HivePack>();
   dev.log(_packList.length.toString());
