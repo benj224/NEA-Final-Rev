@@ -146,19 +146,31 @@ class _CreatePackState extends State<CreatePack> {
                         widget.pack.name = titleController.text;
                         widget.pack.hivePack.title = titleController.text;
 
-                        List<HivePack> pcks = await packsFromHive();
+                        List<HivePack> pcks = await packsFromHive();///not working here
                         log("didnt crash here");
 
-                        if(!pcks.contains(widget.pack.hivePack)){
+                        bool isNewPack = true;
+                        pcks.forEach((element) {
+                          if (element.title == widget.pack.name){
+                            isNewPack = false;
+                          }
+                        });
+
+                        log("here still");
+                        log(isNewPack.toString());
+                        if(isNewPack){
 
                           globals.packs.add(widget.pack.hivePack);
                           Box box = await Hive.box("Globals");
 
 
+                          log("here 1");
                           pcks.add(widget.pack.hivePack);
+                          log("here 2");
                           box.delete("packs");
+                          log("here 3");
                           box.put("packs", pcks);
-
+                          log("here 4");
 
                         }else{
 
