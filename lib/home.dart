@@ -76,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 
-  List<Widget> getPacks(){
+  List<Widget>   getPacks() {
     if(globals.packs.isEmpty){
       return [Material(
         elevation: 5,
@@ -96,22 +96,30 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),];
-    };
+    }else{
 
-    List<Pack> outPacks = [];
+      List<Pack> pcks = [];
+      globals.packs.forEach((element) {
+        pcks.add(Pack(enabled: true, name: element.title, hivePack: element,));
+      });
+      return pcks;
+    }
+
+    /*List<Pack>  = [];
 
     globals.packs.forEach((element) {
       dev.log("element.title");
       outPacks.add(Pack(enabled: element.enabled, hivePack: element, name: element.title,));
-    });
+    });*/
 
-    return outPacks;
   }
 
 
 
   @override
   void initState() {
+
+    dev.log("made it here");
 
 
     if(!(globals.listening)){
@@ -162,6 +170,9 @@ class _MyHomePageState extends State<MyHomePage> {
         requestUserPermission();
       });
     }
+
+    dev.log("bruh what");
+
   }
 
   void searchPacks(String query){
@@ -222,7 +233,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Stack(
                   children: [
                     ListView(
-                      children: getPacks(),
+                      children: getPacks()
                     ),
 
                     Align(

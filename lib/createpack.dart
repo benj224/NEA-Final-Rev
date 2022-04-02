@@ -147,6 +147,7 @@ class _CreatePackState extends State<CreatePack> {
                         widget.pack.hivePack.title = titleController.text;
 
                         List<HivePack> pcks = await packsFromHive();///not working here
+                        log(pcks.toString());
                         log("didnt crash here");
 
                         bool isNewPack = true;
@@ -169,8 +170,12 @@ class _CreatePackState extends State<CreatePack> {
                           log("here 2");
                           box.delete("packs");
                           log("here 3");
+                          log(pcks.length.toString());
                           box.put("packs", pcks);
                           log("here 4");
+                          List<dynamic> npks = box.get("packs");
+                          log(npks.toString());
+
 
                         }else{
 
@@ -188,6 +193,7 @@ class _CreatePackState extends State<CreatePack> {
                         ///schedule questions
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) => MyHomePage()));
+                        log("no overflow yet");
                       }
 
                       ///might error cos pcks is dynamic

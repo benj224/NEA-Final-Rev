@@ -16,9 +16,8 @@ part 'classes.g.dart';
 Future<List<HivePack>> packsFromHive() async{
   Box box = await Hive.box("Globals");
   List<dynamic> _pcks = box.get("packs");
-  if (_pcks == null){
-    return [];
-  }
+  dev.log(_pcks.toString());
+  dev.log("pckstostring");
   List<HivePack> packs = [];
   _pcks.forEach((element) {
     packs.add(element);
@@ -28,7 +27,7 @@ Future<List<HivePack>> packsFromHive() async{
 
 }
 
-void deleteFromHive(HivePack pack) async {
+/*void deleteFromHive(HivePack pack) async {
   Box box = await Hive.box("Globals");
   List<dynamic> _pcks = box.get("packs");
   if (_pcks == null){
@@ -45,7 +44,7 @@ void deleteFromHive(HivePack pack) async {
 
   box.delete("packs");
   box.put("packs", newList);
-}
+}*/
 
 
 void sendNotification(int hour, int minute, String question, String ans1, String ans2, String ans3, String correct, String packName) async {
@@ -95,9 +94,12 @@ void sendNotification(int hour, int minute, String question, String ans1, String
 
 void scheduleQuestions() async{
   var rng = Random();
-  Box box = await Hive.openBox("Globals");
-  List<dynamic> pcks = box.get("packs");
+
+  List<HivePack> pcks = await packsFromHive();
   dev.log("length of packs");
+  if(pcks == null){
+    pcks = [];
+  }
   dev.log(pcks.length.toString());
 
   List<HivePack> _packList = pcks.cast<HivePack>();
