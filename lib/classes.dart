@@ -191,6 +191,12 @@ void scheduleQuestions() async{
         HiveQuestion qst = qstList.removeAt(0);
       }
 
+      int earliest = x*hourIndex.toInt()*60;
+      int latest = (x+1)*hourIndex.toInt()*60;
+      int min = rng.nextInt(latest-earliest) + earliest;
+      int hours = min ~/ 60;
+      int mins = min % 60;
+
       String corr = "";
 
       if(qst.answers[0].correct){
@@ -203,8 +209,8 @@ void scheduleQuestions() async{
 
 
       dev.log("scheduled notificatons");
-      //sendNotification(hours, mins, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text);
-      sendNotification(DateTime.now().hour, DateTime.now().minute + 1, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
+      sendNotification(hours, mins, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
+      //sendNotification(DateTime.now().hour, DateTime.now().minute + 1, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
     }
   });
 }
