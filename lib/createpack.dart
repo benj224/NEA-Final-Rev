@@ -146,9 +146,9 @@ class _CreatePackState extends State<CreatePack> {
                         widget.pack.name = titleController.text;
                         widget.pack.hivePack.title = titleController.text;
 
-                        getPacks();
 
-                        List<HivePack> pcks = globals.packs;///not working here
+
+                        /*List<HivePack> pcks = await packsFromHive();///not working here
                         log(pcks.toString());
                         log("didnt crash here");
 
@@ -160,17 +160,13 @@ class _CreatePackState extends State<CreatePack> {
                         });
 
                         log("here still");
-                        log(isNewPack.toString());
-                        if(isNewPack){
-
-                          addPack(widget.pack.hivePack);
+                        log(isNewPack.toString());*/
 
 
-                        }else{
+                        addPack(widget.pack.hivePack);
 
-                          globals.packs.add(widget.pack.hivePack);
-                          log(widget.pack.hivePack.title);
-                        }
+
+
 
 
 

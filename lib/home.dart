@@ -175,28 +175,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   }
 
-  void searchPacks(String query){
-    List<HivePack> newList = [];
-    List<HivePack> backup = [];
-    backup.addAll(globals.packs);
-    globals.packs.clear();
-    if(query.isNotEmpty){
-      globals.packs.forEach((element) {
-        if(element.title == query){
-          newList.add(element);
-        }
-      });
-      setState(() {
-        globals.packs = newList;
-      });
-      return;
-    }else{
-      globals.packs.clear();
-      globals.packs.addAll(backup);
-    }
-  }
 
-  TextEditingController editingController = TextEditingController();
 
 
   @override
@@ -210,24 +189,6 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Center(
           child: Column(
             children: <Widget>[
-
-              SizedBox(
-                height: 80,
-                child: TextField(
-                  onChanged: (value) {
-                    searchPacks(value);
-                  },
-                  controller: editingController,
-                  decoration: InputDecoration(
-                      labelText: "Search",
-                      hintText: "Search",
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(25.0)))),
-                ),
-              ),
-
-
               Container(
                 height: MediaQuery.of(context).size.height - 136,
                 child: Stack(

@@ -16,7 +16,7 @@ part 'classes.g.dart';
 
 
 void getPacks() async{
-  Box box = await Hive.openBox("Packs");
+  Box box = await Hive.openBox("Globals");
   List<dynamic> _pcks = box.get("packs");
   List<HivePack> pcks = [];
   if(_pcks == null){
@@ -31,7 +31,7 @@ void getPacks() async{
 }
 
 void addPack(HivePack pack) async{
-  Box box = await Hive.openBox("Packs");
+  Box box = await Hive.openBox("Globals");
   List<dynamic> _pcks = box.get("packs");
   List<HivePack> pcks = [];
   if(_pcks == null){
@@ -51,7 +51,7 @@ void addPack(HivePack pack) async{
 
 
 void deletePack(HivePack pack) async {
-  Box box = await Hive.openBox("Packs");
+  Box box = await Hive.openBox("Globals");
   List<dynamic> _pcks = box.get("packs");
   List<HivePack> pcks = [];
   if(_pcks == null){
@@ -70,8 +70,12 @@ void deletePack(HivePack pack) async {
 
 
 Future<List<HivePack>> packsFromHive() async{
-  Box box = await Hive.box("Packs");
+
+  Box box = await Hive.openBox("Globals");
   List<dynamic> _pcks = box.get("packs");
+  if(_pcks == null){
+    _pcks = [];
+  };
   dev.log(_pcks.toString());
   dev.log("pckstostring");
   List<HivePack> packs = [];
@@ -150,8 +154,7 @@ void sendNotification(int hour, int minute, String question, String ans1, String
 
 void scheduleQuestions() async{
   var rng = Random();
-
-  getPacks();
+  
   List<HivePack> pcks = globals.packs;///might have to wait a little
   dev.log("length of packs");
   if(pcks == null){
