@@ -142,8 +142,8 @@ class _MyHomePageState extends State<MyHomePage> {
         print("Action received!");
         dev.log(action.buttonKeyPressed);///fk yea, use this and correct ans in payload
 
-
-        List<HivePack> packList = await packsFromHive();
+        getPacks();
+        List<HivePack> packList = globals.packs;
         packList.forEach((pack) {
           if(pack.title == action.payload!["name"]){
             pack.questions.forEach((question) {

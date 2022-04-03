@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -13,8 +14,63 @@ import 'makequestion.dart';
 part 'classes.g.dart';
 
 
+
+void getPacks() async{
+  Box box = await Hive.openBox("Packs");
+  List<dynamic> _pcks = box.get("packs");
+  List<HivePack> pcks = [];
+  if(_pcks == null){
+    globals.packs = [];
+    return;
+  }
+  _pcks.forEach((element) {
+    pcks.add(element);
+  });
+  box.close();
+  globals.packs = pcks;
+}
+
+void addPack(HivePack pack) async{
+  Box box = await Hive.openBox("Packs");
+  List<dynamic> _pcks = box.get("packs");
+  List<HivePack> pcks = [];
+  if(_pcks == null){
+    globals.packs = [pack];
+    box.put("packs", [pack]);
+  }else{
+    _pcks.forEach((element) {
+      pcks.add(element);
+    });
+    pcks.add(pack);
+
+    globals.packs = pcks;
+    box.delete("packs");
+    box.put("packs", pcks);
+  }
+}
+
+
+void deletePack(HivePack pack) async {
+  Box box = await Hive.openBox("Packs");
+  List<dynamic> _pcks = box.get("packs");
+  List<HivePack> pcks = [];
+  if(_pcks == null){
+    globals.packs = [];
+    box.put("packs", []);
+  }else{
+    _pcks.forEach((element) {
+      pcks.add(element);
+    });
+    pcks.removeWhere((element) => element.title == pack.title);
+    globals.packs = pcks;
+    box.delete("packs");
+    box.put("packs", pcks);
+  }
+}
+
+
 Future<List<HivePack>> packsFromHive() async{
-  Box box = await Hive.box("Globals");
+  Box box = await Hive.box("Packs");
   List<dynamic> _pcks = box.get("packs");
   dev.log(_pcks.toString());
   dev.log("pckstostring");
@@ -95,7 +151,8 @@ void sendNotification(int hour, int minute, String question, String ans1, String
 void scheduleQuestions() async{
   var rng = Random();
 
-  List<HivePack> pcks = await packsFromHive();
+  getPacks();
+  List<HivePack> pcks = globals.packs;///might have to wait a little
   dev.log("length of packs");
   if(pcks == null){
     pcks = [];

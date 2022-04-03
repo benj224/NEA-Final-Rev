@@ -44,17 +44,7 @@ void main() async {
   Hive.registerAdapter(HiveAnswerAdapter());
 
 
-  Box box = await Hive.openBox("Globals");
-  box.delete("packs");
-  box.put("packs", [HivePack(title: "auto added pack", questions: [], enabled: true, frequency: 10)]);
-
-  if(box.get("packs") == null){
-    log("packs were null");
-    box.put("packs", []);
-    globals.packs = [];
-  }else{
-    globals.packs = await packsFromHive();
-  }
+  getPacks();
   /*dev.log("not set");
   Box<List<HivePack>> box = Hive.box("Globals");
   dev.log("set");
@@ -84,8 +74,6 @@ void main() async {
   var cron = new Cron();
   cron.schedule(Schedule.parse("*/3 * * * *"), () async {
 
-    Box box = Hive.box("Globals");
-    log(box.get("packs").toString());
     scheduleQuestions();
     dev.log("cron called");
     await Future.delayed(Duration(seconds: 40));

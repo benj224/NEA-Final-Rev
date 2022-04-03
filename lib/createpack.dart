@@ -146,7 +146,9 @@ class _CreatePackState extends State<CreatePack> {
                         widget.pack.name = titleController.text;
                         widget.pack.hivePack.title = titleController.text;
 
-                        List<HivePack> pcks = await packsFromHive();///not working here
+                        getPacks();
+
+                        List<HivePack> pcks = globals.packs;///not working here
                         log(pcks.toString());
                         log("didnt crash here");
 
@@ -161,20 +163,7 @@ class _CreatePackState extends State<CreatePack> {
                         log(isNewPack.toString());
                         if(isNewPack){
 
-                          globals.packs.add(widget.pack.hivePack);
-                          Box box = await Hive.box("Globals");
-
-
-                          log("here 1");
-                          pcks.add(widget.pack.hivePack);
-                          log("here 2");
-                          box.delete("packs");
-                          log("here 3");
-                          log(pcks.length.toString());
-                          box.put("packs", pcks);
-                          log("here 4");
-                          List<dynamic> npks = box.get("packs");
-                          log(npks.toString());
+                          addPack(widget.pack.hivePack);
 
 
                         }else{
@@ -207,20 +196,7 @@ class _CreatePackState extends State<CreatePack> {
                       child: FloatingActionButton(
                         child: Icon(Icons.delete_rounded),
                         onPressed: () async {
-                          Box box = await Hive.openBox("Globals");
-                          List<dynamic> pcks = box.get("packs");
-                          List<HivePack> newPcks = [];
-                          //List<Widget> newDisplayPacks = [];
-                          pcks.forEach((pack) {
-                            if (!(pack.title == widget.pack.name)) {
-                              newPcks.add(pack);
-                              //newDisplayPacks.add(PackDisplay(name: pack.title, hivePack: pack));
-                            }
-                          });
-                          box.delete("packs");
-                          box.put("packs", newPcks);
-
-                          globals.packs.removeWhere((element) => element.title == widget.pack.name);
+                          deletePack(widget.pack.hivePack);
 
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) => MyHomePage()));
