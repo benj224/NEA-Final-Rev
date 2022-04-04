@@ -32,22 +32,14 @@ void getPacks() async{
 
 void addPack(HivePack pack) async{
   Box box = await Hive.openBox("Globals");
-  List<dynamic> _pcks = box.get("packs");
-  List<HivePack> pcks = [];
-  if(_pcks == null){
-    globals.packs = [pack];
-    box.put("packs", [pack]);
-  }else{
-    _pcks.forEach((element) {
-      pcks.add(element);
-    });
+  List<HivePack> pcks = globals.packs;
+
     pcks.add(pack);
 
     globals.packs = pcks;
-    box.delete("packs");
     box.put("packs", pcks);
   }
-}
+
 
 
 void deletePack(HivePack pack) async {
@@ -74,8 +66,9 @@ Future<List<HivePack>> packsFromHive() async{
   Box box = await Hive.openBox("Globals");
   List<dynamic> _pcks = box.get("packs");
   if(_pcks == null){
-    _pcks = [];
-  };
+    box.put("packs", []);
+    _pcks = box.get("packs");
+  }
   dev.log(_pcks.toString());
   dev.log("pckstostring");
   List<HivePack> packs = [];

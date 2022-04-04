@@ -163,7 +163,15 @@ class _CreatePackState extends State<CreatePack> {
                         log(isNewPack.toString());*/
 
 
-                        addPack(widget.pack.hivePack);
+                        //addPack(widget.pack.hivePack);
+
+                        Box box = await Hive.openBox("Globals");
+                        List<HivePack> pcks = globals.packs;
+
+                        pcks.add(widget.pack.hivePack);
+
+                        globals.packs = pcks;
+                        box.put("packs", pcks);
 
 
 

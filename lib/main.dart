@@ -36,7 +36,7 @@ void main() async {
       debug: true
   );*/
 
-  await Hive.initFlutter();
+  // await Hive.initFlutter();
 
 
   Hive.registerAdapter(HivePackAdapter());
@@ -44,8 +44,20 @@ void main() async {
   Hive.registerAdapter(HiveAnswerAdapter());
 
 
-  await Hive.openBox("Globals");
-  globals.packs = await packsFromHive();
+  globals.box = await Hive.openBox("Globals");
+
+  List<dynamic> _pcks = await globals.box.get("packs");
+  List<HivePack> pcks = [];
+  _pcks.forEach((element) {
+    pcks.add(element);
+  });
+
+
+  globals.packs = pcks;
+
+  //globals.packs = await packsFromHive();
+
+
   /*dev.log("not set");
   Box<List<HivePack>> box = Hive.box("Globals");
   dev.log("set");

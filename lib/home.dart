@@ -6,6 +6,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:nea/settings.dart';
 import 'dart:developer' as dev;
+import 'package:hive_flutter/hive_flutter.dart';
 
 import 'globals.dart' as globals;
 import 'makequestion.dart';
@@ -76,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 
-  List<Widget>   getPacks() {
+  Future<List<Widget>>   getPacks() async{
     if(globals.packs.isEmpty){
       return [Material(
         elevation: 5,
@@ -98,11 +99,24 @@ class _MyHomePageState extends State<MyHomePage> {
       ),];
     }else{
 
-      List<Pack> pcks = [];
-      globals.packs.forEach((element) {
-        pcks.add(Pack(enabled: true, name: element.title, hivePack: element,));
+
+      Box box = await Hive.openBox("Globals");
+
+
+      List<HivePack> pcks = [];
+      List<dynamic> _pcks = await box.get("packs");
+      _pcks.forEach((element) {
+        pcks.add(element);
       });
-      return pcks;
+
+      globals.packs = pcks;
+
+      List<Pack> packs = [];
+
+      globals.packs.forEach((element) {
+        packs.add(Pack(enabled: true, name: element.title, hivePack: element,));
+      });
+      return packs;
     }
 
     /*List<Pack>  = [];
@@ -193,9 +207,26 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: MediaQuery.of(context).size.height - 136,
                 child: Stack(
                   children: [
-                    ListView(
-                      children: getPacks()
-                    ),
+                    FutureBuilder(///workout how this works
+                    future: getPacks(),
+            builder: (context, AsyncSnapshot snapshot) {
+              if (!snapshot.hasData) {
+                dev.log("snapshot had no data");
+                return Center(child: CircularProgressIndicator());
+              } else {
+                Container(
+                    child: ListView.builder(
+                        itemCount: snapshot.data.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (BuildContext context, int index) {
+                          return snapshot.data;
+                        }));
+              }
+              return Center(child: CircularProgressIndicator());
+            }),
+                    /*ListView(
+                      children: await getPacks()
+                    ),*/
 
                     Align(
                         alignment: FractionalOffset(0.9, 0.95),
