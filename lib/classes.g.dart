@@ -66,14 +66,13 @@ class HiveQuestionAdapter extends TypeAdapter<HiveQuestion> {
       attempted: fields[24] as int,
       correct: fields[25] as int,
       pastAnswers: (fields[26] as List).cast<int>(),
-      hivePack: fields[27] as HivePack,
     );
   }
 
   @override
   void write(BinaryWriter writer, HiveQuestion obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(6)
       ..writeByte(21)
       ..write(obj.cardNo)
       ..writeByte(22)
@@ -85,9 +84,7 @@ class HiveQuestionAdapter extends TypeAdapter<HiveQuestion> {
       ..writeByte(25)
       ..write(obj.correct)
       ..writeByte(26)
-      ..write(obj.pastAnswers)
-      ..writeByte(27)
-      ..write(obj.hivePack);
+      ..write(obj.pastAnswers);
   }
 
   @override

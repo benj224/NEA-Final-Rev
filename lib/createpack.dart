@@ -28,15 +28,27 @@ class _CreatePackState extends State<CreatePack> {
   @override
   void initState() {
     super.initState();
-    globals.questions = widget.pack.hivePack.questions;
-    /// add something for new pack check
+
+    widget.pack.hivePack.questions.forEach((element) {
+      if(!globals.questions.contains(element)){
+        globals.questions.add(element);
+      }
+    });
 
     if(!(globals.newQuestion == null)){
-      globals.questions.add(globals.newQuestion!.hiveQuestion);
-      widget.pack.questions.add(globals.newQuestion!);
-      log(globals.newQuestion!.question);
+      if(!widget.pack.questions.contains(globals.newQuestion!)){
+        widget.pack.questions.add(globals.newQuestion!);
+        widget.pack.hivePack.questions.add(globals.newQuestion!.hiveQuestion);
+
+      }
+      if(!globals.questions.contains(globals.newQuestion!.hiveQuestion)){
+        globals.questions.add(globals.newQuestion!.hiveQuestion);
+      }
       globals.newQuestion = null;
     }
+    /// add something for new pack check
+
+
     titleController.text = widget.pack.name;
   }
 
@@ -95,8 +107,7 @@ class _CreatePackState extends State<CreatePack> {
                                   ],
                                   attempted: 0,
                                   correct: 0,
-                                  pastAnswers: [1, 1, 1, 1, 1, 1],
-                                  hivePack: widget.pack.hivePack),
+                                  pastAnswers: [1, 1, 1, 1, 1, 1],),
                               answers: [
                                 HiveAnswer(text: "<Ans1>", correct: false),
                                 HiveAnswer(text: "<Ans2>", correct: false),
@@ -116,7 +127,7 @@ class _CreatePackState extends State<CreatePack> {
                   child: FloatingActionButton(
                     child: Icon(Icons.done_rounded),
                     onPressed: () async {
-                      if(globals.questions.length == 0){
+                      if(widget.pack.questions.isEmpty){
                         showDialog(
                             context: context,
                             builder: (_) =>
@@ -148,34 +159,7 @@ class _CreatePackState extends State<CreatePack> {
 
 
 
-                        /*List<HivePack> pcks = await packsFromHive();///not working here
-                        log(pcks.toString());
-                        log("didnt crash here");
-
-                        bool isNewPack = true;
-                        pcks.forEach((element) {
-                          if (element.title == widget.pack.name){
-                            isNewPack = false;
-                          }
-                        });
-
-                        log("here still");
-                        log(isNewPack.toString());*/
-
-
-                        //addPack(widget.pack.hivePack);
-
-                        Box box = await Hive.openBox("Globals");
-                        List<HivePack> pcks = globals.packs;
-
-                        pcks.add(widget.pack.hivePack);
-
-                        globals.packs = pcks;
-                        box.put("packs", pcks);
-
-
-
-
+                        addPack(widget.pack.hivePack);
 
 
 
@@ -200,8 +184,6 @@ class _CreatePackState extends State<CreatePack> {
                       child: FloatingActionButton(
                         child: Icon(Icons.delete_rounded),
                         onPressed: () async {
-                          deletePack(widget.pack.hivePack);
-
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) => MyHomePage()));
                         },

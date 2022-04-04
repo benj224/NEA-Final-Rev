@@ -176,9 +176,6 @@ class _MakeQuestionState extends State<MakeQuestion> {
                     widget.question.hiveQuestion.answers[2].correct = widget.a3corr;
 
                     globals.newQuestion = widget.question;
-                    if(!(globals.newPack == null)){
-                      globals.newPack!.questions.add(widget.question);
-                    }
                     log(widget.question.question);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack:  globals.newPack!)));
                   }else{

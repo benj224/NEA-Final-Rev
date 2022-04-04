@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -77,56 +78,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 
-  Future<List<Widget>>   getPacks() async{
-    if(globals.packs.isEmpty){
-      return [Material(
-        elevation: 5,
-        color: Colors.red,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20)
-        ),
-        child: SizedBox(
-          height: 100,
-          child: Stack(
-            children: [
-              Align(
-                alignment: FractionalOffset(0.5, 0.1),
-                child: Text("You Have No Packs"),
-              ),
-            ],
-          ),
-        ),
-      ),];
-    }else{
 
 
-      Box box = await Hive.openBox("Globals");
-
-
-      List<HivePack> pcks = [];
-      List<dynamic> _pcks = await box.get("packs");
-      _pcks.forEach((element) {
-        pcks.add(element);
-      });
-
-      globals.packs = pcks;
-
-      List<Pack> packs = [];
-
-      globals.packs.forEach((element) {
-        packs.add(Pack(enabled: true, name: element.title, hivePack: element,));
-      });
-      return packs;
-    }
-
-    /*List<Pack>  = [];
-
-    globals.packs.forEach((element) {
-      dev.log("element.title");
-      outPacks.add(Pack(enabled: element.enabled, hivePack: element, name: element.title,));
-    });*/
-
-  }
 
 
 
@@ -156,8 +109,8 @@ class _MyHomePageState extends State<MyHomePage> {
         print("Action received!");
         dev.log(action.buttonKeyPressed);///fk yea, use this and correct ans in payload
 
-        getPacks();
-        List<HivePack> packList = globals.packs;
+        //getPacks();
+        List<HivePack> packList = loadPacks();
         packList.forEach((pack) {
           if(pack.title == action.payload!["name"]){
             pack.questions.forEach((question) {
@@ -192,6 +145,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
+
+
   @override
   Widget build(context) {
     return Scaffold(
@@ -207,23 +162,61 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: MediaQuery.of(context).size.height - 136,
                 child: Stack(
                   children: [
-                    FutureBuilder(///workout how this works
-                    future: getPacks(),
-            builder: (context, AsyncSnapshot snapshot) {
-              if (!snapshot.hasData) {
-                dev.log("snapshot had no data");
-                return Center(child: CircularProgressIndicator());
-              } else {
-                Container(
-                    child: ListView.builder(
-                        itemCount: snapshot.data.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (BuildContext context, int index) {
-                          return snapshot.data;
-                        }));
-              }
-              return Center(child: CircularProgressIndicator());
-            }),
+                    ListView(
+                      scrollDirection: Axis.vertical,
+                      children: getPacks(),
+                    ),
+                    /*FutureBuilder<List<Widget>>(
+                      future: Future.delayed(Duration(seconds: 0)),
+                      builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
+                        List<Widget> children;
+                        if (snapshot.connectionState == ConnectionState.done &&
+                            snapshot.hasData) {
+                          dev.log("had data and done");
+                          dev.log(snapshot.data.toString());
+                          children = snapshot.data!;
+                        } else if (snapshot.connectionState == ConnectionState.done &&
+                            snapshot.hasError) {
+                          children = <Widget>[
+                            const Icon(
+                              Icons.error,
+                              color: Colors.red,
+                              size: 100,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 30),
+                              child: Text(
+                                'Error: ${snapshot.error}',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            )
+                          ];
+                        } else {
+                          children = const <Widget>[
+                            SizedBox(
+                              child: CircularProgressIndicator(
+                                color: Colors.blue,
+                              ),
+                              width: 80,
+                              height: 80,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 30),
+                              child: Text(
+                                'Retrieving Data',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            )
+                          ];
+                        }
+                        return Center(
+                          child: ListView(
+                            scrollDirection: Axis.vertical,
+                            children: children,
+                          )
+                        );
+                      },
+                    ),*/
                     /*ListView(
                       children: await getPacks()
                     ),*/

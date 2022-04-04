@@ -36,38 +36,26 @@ void main() async {
       debug: true
   );*/
 
-  // await Hive.initFlutter();
+  await Hive.initFlutter();
 
 
   Hive.registerAdapter(HivePackAdapter());
   Hive.registerAdapter(HiveQuestionAdapter());
   Hive.registerAdapter(HiveAnswerAdapter());
 
-
-  globals.box = await Hive.openBox("Globals");
-
-  List<dynamic> _pcks = await globals.box.get("packs");
-  List<HivePack> pcks = [];
-  _pcks.forEach((element) {
-    pcks.add(element);
-  });
+  Box box = await Hive.openBox<List<HivePack>>("Globals");
 
 
-  globals.packs = pcks;
-
-  //globals.packs = await packsFromHive();
+  //box.put("packs", [HivePack(title: "auto added pack", questions: [], enabled: true, frequency: 14)]);
 
 
-  /*dev.log("not set");
-  Box<List<HivePack>> box = Hive.box("Globals");
-  dev.log("set");
-  List<HivePack>? _packs = box.get("packs");///erroring here need to go back to casting to hivepack, maby make a function.
-  if(!(_packs == null)){
-    globals.packs = _packs!;
-  }*/
 
 
-  await AwesomeNotifications().initialize(
+
+
+
+
+  /*await AwesomeNotifications().initialize(
     // set the icon to null if you want to use the default app icon
       null,
       [
@@ -79,7 +67,7 @@ void main() async {
             ledColor: Colors.white)
       ],
       debug: true
-  );
+  );*/
 
   dev.log("done");
 

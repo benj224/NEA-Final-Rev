@@ -15,89 +15,52 @@ part 'classes.g.dart';
 
 
 
-void getPacks() async{
-  Box box = await Hive.openBox("Globals");
-  List<dynamic> _pcks = box.get("packs");
-  List<HivePack> pcks = [];
-  if(_pcks == null){
-    globals.packs = [];
-    return;
-  }
-  _pcks.forEach((element) {
-    pcks.add(element);
+List<Pack> getPacks(){
+  Box box = Hive.box<List<HivePack>>("Globals");
+  List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]) ?? [];
+  dev.log("packs length " + packs.length.toString());
+
+  List<Pack> outPacks = [];
+
+  packs.forEach((element) {
+    outPacks.add(Pack(enabled: true, name: element.title, hivePack: element,));
   });
-  box.close();
-  globals.packs = pcks;
+
+  return outPacks;
 }
+
+List<HivePack> loadPacks(){
+  Box box = Hive.box<List<HivePack>>("Globals");
+  List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]);
+  return packs;
+}
+
 
 void addPack(HivePack pack) async{
-  Box box = await Hive.openBox("Globals");
-  List<HivePack> pcks = globals.packs;
+  Box box = Hive.box<List<HivePack>>("Globals");
+  List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]);
+  dev.log("before adding " + packs.length.toString());
 
-    pcks.add(pack);
 
-    globals.packs = pcks;
-    box.put("packs", pcks);
+
+  if(!packs.contains(pack)){
+    packs.add(pack);
   }
 
 
-
-void deletePack(HivePack pack) async {
-  Box box = await Hive.openBox("Globals");
-  List<dynamic> _pcks = box.get("packs");
-  List<HivePack> pcks = [];
-  if(_pcks == null){
-    globals.packs = [];
-    box.put("packs", []);
-  }else{
-    _pcks.forEach((element) {
-      pcks.add(element);
-    });
-    pcks.removeWhere((element) => element.title == pack.title);
-    globals.packs = pcks;
-    box.delete("packs");
-    box.put("packs", pcks);
-  }
+  dev.log("before putting " + packs.length.toString());
+  await box.put("packs", packs);
 }
 
 
-Future<List<HivePack>> packsFromHive() async{
 
-  Box box = await Hive.openBox("Globals");
-  List<dynamic> _pcks = box.get("packs");
-  if(_pcks == null){
-    box.put("packs", []);
-    _pcks = box.get("packs");
-  }
-  dev.log(_pcks.toString());
-  dev.log("pckstostring");
-  List<HivePack> packs = [];
-  _pcks.forEach((element) {
-    packs.add(element);
-  });
 
-  return packs;
 
-}
 
-/*void deleteFromHive(HivePack pack) async {
-  Box box = await Hive.box("Globals");
-  List<dynamic> _pcks = box.get("packs");
-  if (_pcks == null){
-    return;
-  }
-  List<HivePack> pcks = _pcks.cast<HivePack>();
 
-  List<HivePack> newList = [];
-  pcks.forEach((element) {
-    if(element.title != pack.title){
-      newList.add(element);
-    }
-  });
 
-  box.delete("packs");
-  box.put("packs", newList);
-}*/
+
+
 
 
 void sendNotification(int hour, int minute, String question, String ans1, String ans2, String ans3, String correct, String packName) async {
@@ -148,7 +111,7 @@ void sendNotification(int hour, int minute, String question, String ans1, String
 void scheduleQuestions() async{
   var rng = Random();
 
-  List<HivePack> pcks = globals.packs;///might have to wait a little
+  List<HivePack> pcks = loadPacks();///might have to wait a little
   dev.log("length of packs");
   if(pcks == null){
     pcks = [];
@@ -215,7 +178,7 @@ void sendIt() async {
     HiveAnswer(text: "<Ans1>", correct: true),
     HiveAnswer(text: "<Ans2>", correct: false),
     HiveAnswer(text: "<Ans3>", correct: false),
-  ], attempted: 0, correct: 0, pastAnswers: [1,1,1,1,1,1], hivePack: HivePack(title: "title", questions: [], enabled: true, frequency: 10));
+  ], attempted: 0, correct: 0, pastAnswers: [1,1,1,1,1,1], );
   HivePack pack = HivePack(title: "title", questions: [qst], enabled: true, frequency: 10);
   String corr = "";
 
@@ -285,7 +248,7 @@ class HivePack extends HiveObject{
 @HiveType(typeId: 20)
 class HiveQuestion extends HiveObject{
   HiveQuestion(
-      {required this.cardNo, required this.question, required this.answers, required this.attempted, required this.correct, required this.pastAnswers, required this.hivePack})
+      {required this.cardNo, required this.question, required this.answers, required this.attempted, required this.correct, required this.pastAnswers})
       : super();
   @HiveField(21)
   int cardNo;///probs change this
@@ -299,8 +262,6 @@ class HiveQuestion extends HiveObject{
   int correct;
   @HiveField(26)
   List<int> pastAnswers;
-  @HiveField(27)
-  HivePack hivePack;
 }
 
 
@@ -366,44 +327,6 @@ class _QuestionState extends State<Question>{
   }
 
 
-  void schedule(){
-    AwesomeNotifications().createNotification(
-      content: NotificationContent(
-          id: 100,
-          channelKey: "awesome_notifications",
-          title: "Question:",
-          body: widget.question,
-          //notificationLayout: NotificationLayout.BigPicture,
-          //largeIcon: "https://avidabloga.files.wordpress.com/2012/08/emmemc3b3riadeneilarmstrong3.jpg",
-          //bigPicture: "https://www.dw.com/image/49519617_303.jpg",
-          showWhen: true,
-          payload: {
-            "packname":widget.hiveQuestion.hivePack.title,
-            "question":widget.question
-          }
-      ),
-      actionButtons: [
-        NotificationActionButton(
-          key: "a1",
-          label: widget.answers[0].text,
-          enabled: true,
-          buttonType: ActionButtonType.Default,
-        ),
-        NotificationActionButton(
-          key: "a2",
-          label: widget.answers[1].text,
-          enabled: true,
-          buttonType: ActionButtonType.Default,
-        ),
-        NotificationActionButton(
-          key: "a3",
-          label: widget.answers[2].text,
-          enabled: true,
-          buttonType: ActionButtonType.Default,
-        )
-      ],
-    );
-  }
 
   @override
   void initState(){
@@ -536,7 +459,6 @@ class _PackState extends State<Pack>{
         });
       },
       onDoubleTap: () async{
-        globals.packs.removeWhere((element) => element.title == widget.name);
         Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: widget)));
 
         dev.log("here 3");
