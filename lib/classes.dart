@@ -154,7 +154,7 @@ void sendNotification(int hour, int minute, String question, String ans1, String
 
 void scheduleQuestions() async{
   var rng = Random();
-  
+
   List<HivePack> pcks = globals.packs;///might have to wait a little
   dev.log("length of packs");
   if(pcks == null){
