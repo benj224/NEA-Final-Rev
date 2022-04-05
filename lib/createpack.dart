@@ -68,8 +68,10 @@ class _CreatePackState extends State<CreatePack> {
   Widget build(context) {
     return Scaffold(
         appBar: AppBar(title: TextField(
+          style: TextStyle(color: Colors.white, fontSize: 18),
           controller: titleController,
           decoration: InputDecoration(
+            fillColor: Colors.white,
               contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
               hintText: "Title",
               border: OutlineInputBorder(
@@ -100,23 +102,23 @@ class _CreatePackState extends State<CreatePack> {
                         Navigator.push(
                             context, MaterialPageRoute(builder: (context) =>
                             MakeQuestion(question: Question(
-                              hiveQuestion: HiveQuestion(question: "<question>",
+                              hiveQuestion: HiveQuestion(question: "",
                                   cardNo: 0,
                                   answers: [
-                                    HiveAnswer(text: "<Ans1>", correct: false),
-                                    HiveAnswer(text: "<Ans2>", correct: false),
-                                    HiveAnswer(text: "<Ans3>", correct: false),
+                                    HiveAnswer(text: "", correct: false),
+                                    HiveAnswer(text: "", correct: false),
+                                    HiveAnswer(text: "", correct: false),
                                   ],
                                   attempted: 0,
                                   correct: 0,
                                   pastAnswers: [1, 1, 1, 1, 1, 1],),
                               answers: [
-                                HiveAnswer(text: "<Ans1>", correct: false),
-                                HiveAnswer(text: "<Ans2>", correct: false),
-                                HiveAnswer(text: "<Ans3>", correct: false),
+                                HiveAnswer(text: "", correct: false),
+                                HiveAnswer(text: "", correct: false),
+                                HiveAnswer(text: "", correct: false),
                               ],
                               cardNo: 0,
-                              question: "<question>",),)));
+                              question: "",),)));
                       });
                     },
                     tooltip: 'Add Item',
@@ -129,7 +131,7 @@ class _CreatePackState extends State<CreatePack> {
                   child: FloatingActionButton(
                     child: Icon(Icons.done_rounded),
                     onPressed: () async {
-                      if(widget.pack.hivePack.questions.isEmpty){
+                      if(widget.pack.hivePack.questions.isEmpty || titleController.text == ""){
                         showDialog(
                             context: context,
                             builder: (_) =>

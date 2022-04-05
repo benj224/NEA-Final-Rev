@@ -15,7 +15,7 @@ part 'classes.g.dart';
 
 
 
-List<Pack> getPacks(){
+List<Widget> getPacks(){
   Box box = Hive.box<List>("Globals");
   List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]).cast<HivePack>();
   dev.log("packs length " + packs.length.toString());
@@ -25,6 +25,29 @@ List<Pack> getPacks(){
   packs.forEach((element) {
     outPacks.add(Pack(enabled: true, name: element.title, hivePack: element,));
   });
+
+  if(outPacks.isEmpty){
+    return [
+      Material(
+        elevation: 5,
+        color: Colors.red,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20)
+        ),
+        child: SizedBox(
+          height: 100,
+          child: Stack(
+            children: [
+              Align(
+                alignment: FractionalOffset(0.5, 0.1),
+                child: Text("You have no Packs"),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ];
+  }
 
   return outPacks;
 }
@@ -300,22 +323,26 @@ class Question extends StatefulWidget{
 }
 
 class _QuestionState extends State<Question>{
-  MaterialColor confidence(){
-    if(!widget.enabled){
-      return Colors.grey;
-    }
-    int noCorrect = 0;
-    widget.pastAnswers.forEach((element) {
-      noCorrect += 1;
-    });
-
-    if(noCorrect <= 4){
-      return Colors.red;
-    }if(noCorrect <= 2){
-      return Colors.orange;
+  Color confidence(){
+    
+    int total = 0;
+    int max = 0;
+    for(int i = 1; i < widget.pastAnswers.length; i++){
+      total += (widget.pastAnswers.length-i)*(widget.pastAnswers[widget.pastAnswers.length-i]);
+      max += (widget.pastAnswers.length-i)*2;
     }
 
-    return Colors.green;
+    dev.log(total.toString());
+
+    widget.progress = total/max;
+    
+    int colorValue = (total/max * 255).toInt();
+
+    dev.log(colorValue.toString());
+    dev.log("color value");
+    Color color = Color.fromARGB(255, 255-colorValue, colorValue, 0);
+
+    return color;
   }
 
   void updateProgress(){

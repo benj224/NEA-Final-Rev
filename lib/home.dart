@@ -227,7 +227,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: Icon(Icons.add),
                             onPressed: () {
                               Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) => CreatePack(pack: Pack(enabled: true, name: "name", hivePack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2),))));
+                                  MaterialPageRoute(builder: (context) => CreatePack(pack: Pack(enabled: true, name: "", hivePack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2),))));
                             },
                         )
                     ),

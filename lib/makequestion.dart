@@ -28,6 +28,20 @@ class MakeQuestion extends StatefulWidget{
 
 class _MakeQuestionState extends State<MakeQuestion> {
 
+  List<Widget> showPastAns(){
+    List<Widget> outBoxes = [];
+    outBoxes.add(Text("Past Answers: "));
+    widget.question.hiveQuestion.pastAnswers.forEach((element) {
+      if(element == 2){
+        outBoxes.add(Checkbox(value: true, onChanged: null));
+      }else{
+        outBoxes.add(Checkbox(value: false, onChanged: null));
+      }
+    });
+
+    return outBoxes;
+  }
+
   @override
   void initState(){
     super.initState();
@@ -45,107 +59,146 @@ class _MakeQuestionState extends State<MakeQuestion> {
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar(title: TextField(
+        style: TextStyle(color: Colors.white, fontSize: 18),
+        controller: widget.qstCont,
+        decoration: InputDecoration(
+            fillColor: Colors.white,
+            contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+            hintText: "Question",
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(32))
+        ),
+      ),
         automaticallyImplyLeading: false,
-        title: Text("Question Cretor"),
       ),
 
       body: Center(
-        child: Stack(
-          children: [
-            Align(
-              alignment: FractionalOffset(0.5, 0.4),
-              child: SizedBox(
-                height: 20,
-                width: MediaQuery.of(context).size.width * 0.425,
-                child: TextField(
-                  controller: widget.qstCont,///load
-                  style: TextStyle(
+        child: Container(
+          width: 0.95*MediaQuery.of(context).size.width,
+          alignment: FractionalOffset(0.5, 0),
+          child: Stack(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(
+                      children: showPastAns()
                   ),
-                ),
-              ),
-            ),
-            Align(
-              alignment: FractionalOffset(0.2, 0.5),
-              child: Checkbox(
-                value: widget.a1corr,
-                onChanged: (bool? value){
-                  setState(() {
-                    widget.a1corr = value!;
-                  });
-                },
-              ),
-            ),
-            Align(
-              alignment: FractionalOffset(0.6, 0.5),
-              child: SizedBox(
-                height: 20,
-                width: MediaQuery.of(context).size.width * 0.425,
-                child: TextField(
-                  controller: widget.ans1Cont,
-                  decoration: InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      hintText: "Answer 1",
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Times Attempted: " + widget.question.hiveQuestion.attempted.toString()),
                   ),
-                ),
-              ),
-            ),
-            Align(
-              alignment: FractionalOffset(0.2, 0.6),
-              child: Checkbox(
-                value: widget.a2corr,
-                onChanged: (bool? value){
-                  setState(() {
-                    widget.a2corr = value!;
-                  });
-                },
-              ),
-            ),
-            Align(
-              alignment: FractionalOffset(0.6, 0.6),
-              child: SizedBox(
-                height: 20,
-                width: MediaQuery.of(context).size.width * 0.425,
-                child: TextField(
-                  controller: widget.ans2Cont,
-                  decoration: InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      hintText: "Answer 2",
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text("Times Correct: " + widget.question.hiveQuestion.correct.toString()),
                   ),
-                ),
-              ),
-            ),
-            Align(
-              alignment: FractionalOffset(0.2, 0.7),
-              child: Checkbox(
-                value: widget.a3corr,
-                onChanged: (bool? value){
-                  setState(() {
-                    widget.a3corr = value!;
-                  });
-                },
-              ),
-            ),
-            Align(
-              alignment: FractionalOffset(0.6, 0.7),
-              child: SizedBox(
-                height: 20,
-                width: MediaQuery.of(context).size.width * 0.425,
-                child: TextField(
-                  controller: widget.ans3Cont,
-                  decoration: InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      hintText: "Answer 3",
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
+
+                  Row(
+                    children: [
+                      Align(
+                        alignment: FractionalOffset(0.2, 0.5),
+                        child: Checkbox(
+                          value: widget.a1corr,
+                          onChanged: (bool? value){
+                            setState(() {
+                              widget.a1corr = value!;
+                            });
+                          },
+                        ),
+                      ),
+                      Align(
+                        alignment: FractionalOffset(0.6, 0.5),
+                        child: SizedBox(
+                          height: 20,
+                          width: MediaQuery.of(context).size.width * 0.425,
+                          child: TextField(
+                            controller: widget.ans1Cont,
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                hintText: "Answer 1",
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
+
+                  Row(
+                    children: [
+                      Align(
+                        alignment: FractionalOffset(0.2, 0.6),
+                        child: Checkbox(
+                          value: widget.a2corr,
+                          onChanged: (bool? value){
+                            setState(() {
+                              widget.a2corr = value!;
+                            });
+                          },
+                        ),
+                      ),
+                      Align(
+                        alignment: FractionalOffset(0.6, 0.6),
+                        child: SizedBox(
+                          height: 20,
+                          width: MediaQuery.of(context).size.width * 0.425,
+                          child: TextField(
+                            controller: widget.ans2Cont,
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                hintText: "Answer 2",
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  Row(
+                    children: [
+                      Align(
+                        alignment: FractionalOffset(0.2, 0.7),
+                        child: Checkbox(
+                          value: widget.a3corr,
+                          onChanged: (bool? value){
+                            setState(() {
+                              widget.a3corr = value!;
+                            });
+                          },
+                        ),
+                      ),
+                      Align(
+                        alignment: FractionalOffset(0.6, 0.7),
+                        child: SizedBox(
+                          height: 20,
+                          width: MediaQuery.of(context).size.width * 0.425,
+                          child: TextField(
+                            controller: widget.ans3Cont,
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                hintText: "Answer 3",
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 100,
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        )
       ),
+
+
+
+
       floatingActionButton: Stack(
         children: [
           Align(
@@ -153,7 +206,7 @@ class _MakeQuestionState extends State<MakeQuestion> {
             child: FloatingActionButton(
               child: Icon(Icons.done_rounded),
                 onPressed: ()async{
-                  bool textChanged = !(widget.qstCont.text == "<question>") & !(widget.ans1Cont == "<ans1>") & !(widget.ans2Cont == "<ans2>") & !(widget.ans3Cont == "<ans3>");
+                  bool textChanged = !(widget.qstCont.text == "") & !(widget.ans1Cont == "") & !(widget.ans2Cont == "") & !(widget.ans3Cont == "");
                   bool hasAnswer = widget.a1corr | widget.a2corr | widget.a3corr;
                   log(hasAnswer.toString());
                   log(textChanged.toString());
