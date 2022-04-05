@@ -30,13 +30,15 @@ class _CreatePackState extends State<CreatePack> {
     super.initState();
 
     widget.pack.hivePack.questions.forEach((element) {
+      log(element.question);
       if(!globals.questions.contains(element)){
         globals.questions.add(element);
       }
     });
 
     if(!(globals.newQuestion == null)){
-      if(!widget.pack.questions.contains(globals.newQuestion!)){
+      if(!widget.pack.hivePack.questions.contains(globals.newQuestion!.hiveQuestion)){
+        log("pack qustions didnt contain");
         widget.pack.questions.add(globals.newQuestion!);
         widget.pack.hivePack.questions.add(globals.newQuestion!.hiveQuestion);
 
@@ -127,7 +129,7 @@ class _CreatePackState extends State<CreatePack> {
                   child: FloatingActionButton(
                     child: Icon(Icons.done_rounded),
                     onPressed: () async {
-                      if(widget.pack.questions.isEmpty){
+                      if(widget.pack.hivePack.questions.isEmpty){
                         showDialog(
                             context: context,
                             builder: (_) =>
@@ -184,6 +186,10 @@ class _CreatePackState extends State<CreatePack> {
                       child: FloatingActionButton(
                         child: Icon(Icons.delete_rounded),
                         onPressed: () async {
+
+                          deletePack(widget.pack.hivePack);
+                          globals.questions = [];
+
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) => MyHomePage()));
                         },

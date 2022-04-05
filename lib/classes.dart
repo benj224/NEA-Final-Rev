@@ -29,6 +29,17 @@ List<Pack> getPacks(){
   return outPacks;
 }
 
+
+void deletePack(HivePack pack){
+  Box box = Hive.box<List<HivePack>>("Globals");
+  List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]) ?? [];
+
+  packs.removeWhere((element) => element == pack);
+
+  box.put("packs", packs);
+}
+
+
 List<HivePack> loadPacks(){
   Box box = Hive.box<List<HivePack>>("Globals");
   List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]);
@@ -51,11 +62,6 @@ void addPack(HivePack pack) async{
   dev.log("before putting " + packs.length.toString());
   await box.put("packs", packs);
 }
-
-
-
-
-
 
 
 
@@ -111,14 +117,14 @@ void sendNotification(int hour, int minute, String question, String ans1, String
 void scheduleQuestions() async{
   var rng = Random();
 
-  List<HivePack> pcks = loadPacks();///might have to wait a little
-  dev.log("length of packs");
-  if(pcks == null){
-    pcks = [];
+  late Box box;
+  if(Hive.isBoxOpen("Globals")){
+    box = Hive.box("Globals");
+  }else{
+    box = await Hive.openBox("Globals");
   }
-  dev.log(pcks.length.toString());
 
-  List<HivePack> _packList = pcks.cast<HivePack>();
+  List<HivePack> _packList = box.get("packs");
   dev.log(_packList.length.toString());
   _packList.forEach((pack) {
     List<HiveQuestion> qstList = [];
