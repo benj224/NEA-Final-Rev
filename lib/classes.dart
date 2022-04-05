@@ -16,8 +16,8 @@ part 'classes.g.dart';
 
 
 List<Pack> getPacks(){
-  Box box = Hive.box<List<HivePack>>("Globals");
-  List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]) ?? [];
+  Box box = Hive.box<List>("Globals");
+  List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]).cast<HivePack>();
   dev.log("packs length " + packs.length.toString());
 
   List<Pack> outPacks = [];
@@ -31,8 +31,8 @@ List<Pack> getPacks(){
 
 
 void deletePack(HivePack pack){
-  Box box = Hive.box<List<HivePack>>("Globals");
-  List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]) ?? [];
+  Box box = Hive.box<List>("Globals");
+  List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]).cast<HivePack>();
 
   packs.removeWhere((element) => element == pack);
 
@@ -41,15 +41,15 @@ void deletePack(HivePack pack){
 
 
 List<HivePack> loadPacks(){
-  Box box = Hive.box<List<HivePack>>("Globals");
-  List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]);
+  Box box = Hive.box<List>("Globals");
+  List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]).cast<HivePack>();
   return packs;
 }
 
 
 void addPack(HivePack pack) async{
-  Box box = Hive.box<List<HivePack>>("Globals");
-  List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]);
+  Box box = Hive.box<List>("Globals");
+  List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]).cast<HivePack>();
   dev.log("before adding " + packs.length.toString());
 
 
@@ -119,12 +119,12 @@ void scheduleQuestions() async{
 
   late Box box;
   if(Hive.isBoxOpen("Globals")){
-    box = Hive.box("Globals");
+    box = Hive.box<List>("Globals");
   }else{
-    box = await Hive.openBox("Globals");
+    box = await Hive.openBox<List>("Globals");
   }
 
-  List<HivePack> _packList = box.get("packs");
+  List<HivePack> _packList = box.get("packs", defaultValue: <HivePack>[]).cast<HivePack>();
   dev.log(_packList.length.toString());
   _packList.forEach((pack) {
     List<HiveQuestion> qstList = [];
@@ -171,8 +171,8 @@ void scheduleQuestions() async{
 
 
       dev.log("scheduled notificatons");
-      sendNotification(hours, mins, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
-      //sendNotification(DateTime.now().hour, DateTime.now().minute + 1, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
+      //sendNotification(hours, mins, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
+      sendNotification(DateTime.now().hour, DateTime.now().minute + 1, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
     }
   });
 }

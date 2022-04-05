@@ -22,7 +22,7 @@ import 'home.dart';
 
 void main() async {
 
-  /*bool done = await AwesomeNotifications().initialize(
+  bool done = await AwesomeNotifications().initialize(
     // set the icon to null if you want to use the default app icon
       null,
       [
@@ -34,7 +34,7 @@ void main() async {
             ledColor: Colors.white)
       ],
       debug: true
-  );*/
+  );
 
   await Hive.initFlutter();
 
@@ -43,7 +43,7 @@ void main() async {
   Hive.registerAdapter(HiveQuestionAdapter());
   Hive.registerAdapter(HiveAnswerAdapter());
 
-  Box box = await Hive.openBox<List<HivePack>>("Globals");
+  Box box = await Hive.openBox<List>("Globals");
 
 
   //box.put("packs", [HivePack(title: "auto added pack", questions: [], enabled: true, frequency: 14)]);
@@ -73,7 +73,7 @@ void main() async {
 
 
   var cron = new Cron();
-  cron.schedule(Schedule.parse("* 1 * * *"), () async {
+  cron.schedule(Schedule.parse("*/3 * * * *"), () async {
 
     scheduleQuestions();
     dev.log("cron called");
