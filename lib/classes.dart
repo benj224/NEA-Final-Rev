@@ -14,6 +14,19 @@ import 'makequestion.dart';
 part 'classes.g.dart';
 
 
+bool isNotificationsAllowed(){
+  Box box = Hive.box("Permissions");
+
+  bool allowed = box.get("notifications", defaultValue: false);
+  return allowed;
+}
+
+void notificationsAllowed(){
+  Box box = Hive.box("Permissions");
+  box.put("notifications", true);
+}
+
+
 
 List<Widget> getPacks(){
   Box box = Hive.box<List>("Globals");
@@ -95,11 +108,11 @@ void addPack(HivePack pack) async{
 void sendNotification(int hour, int minute, String question, String ans1, String ans2, String ans3, String correct, String packName) async {
   dev.log("is executing");
 
-  if(!globals.notificationsAllowed){
+  if(!isNotificationsAllowed()){
     await globals.requestUserPermission();
   }
 
-  if(!globals.notificationsAllowed){
+  if(!isNotificationsAllowed()){
     dev.log("was false");
     return;
   }
@@ -203,60 +216,6 @@ void scheduleQuestions() async{
 }
 
 
-void sendIt() async {
-  dev.log("sent");
-  HiveQuestion qst = HiveQuestion(question: "<question>", cardNo: 0, answers: [
-    HiveAnswer(text: "<Ans1>", correct: true),
-    HiveAnswer(text: "<Ans2>", correct: false),
-    HiveAnswer(text: "<Ans3>", correct: false),
-  ], attempted: 0, correct: 0, pastAnswers: [1,1,1,1,1,1], );
-  HivePack pack = HivePack(title: "title", questions: [qst], enabled: true, frequency: 10);
-  String corr = "";
-
-  if(qst.answers[0].correct){
-    corr = "0";
-  }if(qst.answers[1].correct){
-    corr = "1";
-  }if(qst.answers[2].correct){
-    corr = "2";
-  }
-
-///try this
-  sendNotification(DateTime.now().hour, DateTime.now().minute + 1, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
-
-  /*await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: 100,
-        channelKey: "awesome_notifications",
-        title: "question",
-        body: "test",
-        //notificationLayout: NotificationLayout.BigPicture,
-        //largeIcon: "https://avidabloga.files.wordpress.com/2012/08/emmemc3b3riadeneilarmstrong3.jpg",
-        //bigPicture: "https://www.dw.com/image/49519617_303.jpg",
-        showWhen: true,
-      ),
-      actionButtons: [
-        NotificationActionButton(
-          key: "a1",
-          label: "ans1",
-          enabled: true,
-          buttonType: ActionButtonType.Default,
-        ),
-        NotificationActionButton(
-          key: "a2",
-          label: "ans2",
-          enabled: true,
-          buttonType: ActionButtonType.Default,
-        ),
-        NotificationActionButton(
-          key: "a3",
-          label: "ans3",
-          enabled: true,
-          buttonType: ActionButtonType.Default,
-        )
-      ],
-  );*/
-}
 
 
 

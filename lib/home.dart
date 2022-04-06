@@ -31,6 +31,8 @@ class MyHomePage extends StatefulWidget{
 class _MyHomePageState extends State<MyHomePage> {
 
 
+
+  ///send a dialoge box asking for permission to send notifications
   Future<void> requestUserPermission() async {
     showDialog(
         context: context,
@@ -54,23 +56,18 @@ class _MyHomePageState extends State<MyHomePage> {
               entryAnimation: EntryAnimation.DEFAULT,
               onCancelButtonPressed: () async {
                 Navigator.of(context).pop();
-                globals.notificationsAllowed = await AwesomeNotifications().isNotificationAllowed();
-                setState(() {
-                  dev.log(globals.notificationsAllowed.toString());
-                  globals.notificationsAllowed = globals.notificationsAllowed;
-                });
               },
               onOkButtonPressed: () async {
                 Navigator.of(context).pop();
                 dev.log("exec 0");///probs not an issue on mobile
                 await AwesomeNotifications().requestPermissionToSendNotifications();
                 dev.log("exec 1");
-                globals.notificationsAllowed = await AwesomeNotifications().isNotificationAllowed();
+                bool allowed = await AwesomeNotifications().isNotificationAllowed();
                 dev.log("exec 2");
                 setState(() {
-                  dev.log(globals.notificationsAllowed.toString());
-                  globals.notificationsAllowed = globals.notificationsAllowed;
-                  dev.log(globals.notificationsAllowed.toString());
+                  if(allowed){
+                    notificationsAllowed();
+                  }
                 });
               },
             )
@@ -86,9 +83,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
 
-    dev.log("made it here");
 
-
+    ///set up listeners for every notification action
     if(!(globals.listening)){
 
       globals.listening = true;
@@ -107,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       AwesomeNotifications().actionStream.listen((ReceivedAction action) async {
         print("Action received!");
-        dev.log(action.buttonKeyPressed);///fk yea, use this and correct ans in payload
+        dev.log(action.buttonKeyPressed);
 
         //getPacks();
         List<HivePack> packList = loadPacks();
@@ -132,14 +128,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
     //check permissions for notification access
-    if(!globals.notificationsAllowed){
+    if(!isNotificationsAllowed()){
       Future.delayed(Duration.zero, (){
         requestUserPermission();
       });
     }
-
-    dev.log("bruh what");
-
   }
 
 
@@ -166,60 +159,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       scrollDirection: Axis.vertical,
                       children: getPacks(),
                     ),
-                    /*FutureBuilder<List<Widget>>(
-                      future: Future.delayed(Duration(seconds: 0)),
-                      builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
-                        List<Widget> children;
-                        if (snapshot.connectionState == ConnectionState.done &&
-                            snapshot.hasData) {
-                          dev.log("had data and done");
-                          dev.log(snapshot.data.toString());
-                          children = snapshot.data!;
-                        } else if (snapshot.connectionState == ConnectionState.done &&
-                            snapshot.hasError) {
-                          children = <Widget>[
-                            const Icon(
-                              Icons.error,
-                              color: Colors.red,
-                              size: 100,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 30),
-                              child: Text(
-                                'Error: ${snapshot.error}',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            )
-                          ];
-                        } else {
-                          children = const <Widget>[
-                            SizedBox(
-                              child: CircularProgressIndicator(
-                                color: Colors.blue,
-                              ),
-                              width: 80,
-                              height: 80,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 30),
-                              child: Text(
-                                'Retrieving Data',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            )
-                          ];
-                        }
-                        return Center(
-                          child: ListView(
-                            scrollDirection: Axis.vertical,
-                            children: children,
-                          )
-                        );
-                      },
-                    ),*/
-                    /*ListView(
-                      children: await getPacks()
-                    ),*/
 
                     Align(
                         alignment: FractionalOffset(0.9, 0.95),

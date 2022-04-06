@@ -1,10 +1,5 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
-
 part of 'classes.dart';
 
-// **************************************************************************
-// TypeAdapterGenerator
-// **************************************************************************
 
 class HivePackAdapter extends TypeAdapter<HivePack> {
   @override

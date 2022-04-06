@@ -223,21 +223,6 @@ class _SettingsState extends State<Settings> {
               ),
             )
           ),
-
-          Align(
-            child:GestureDetector(
-              onTap: (){
-                sendIt();
-              },
-              child: Material(
-                color: Colors.red,
-                child: SizedBox(
-                  width: 20,
-                  height: 20,
-                ),
-              ),
-            ),
-          )
         ],
       ),
       floatingActionButton: Stack(

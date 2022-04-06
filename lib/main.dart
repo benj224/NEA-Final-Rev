@@ -14,13 +14,15 @@ import 'globals.dart' as globals;
 import 'classes.dart';
 import 'home.dart';
 
-///add button for settings fix packs
+
 
 
 
 
 
 void main() async {
+
+  ///Initialize the awesome notifications service and create a channel for us to create notifications on
 
   /*bool done = await AwesomeNotifications().initialize(
     // set the icon to null if you want to use the default app icon
@@ -36,131 +38,41 @@ void main() async {
       debug: true
   );*/
 
+
+  ///initialize the flutter service for hive (no path specified using default value)
   await Hive.initFlutter();
 
 
+  ///register hive type adapters for storing items of the hive classes defined in classes.dart
   Hive.registerAdapter(HivePackAdapter());
   Hive.registerAdapter(HiveQuestionAdapter());
   Hive.registerAdapter(HiveAnswerAdapter());
 
-  Box box = await Hive.openBox<List>("Globals");
 
 
-  //box.put("packs", [HivePack(title: "auto added pack", questions: [], enabled: true, frequency: 14)]);
-
-
-
-
-
-
-
-
-  await AwesomeNotifications().initialize(
-    // set the icon to null if you want to use the default app icon
-      null,
-      [
-        NotificationChannel(
-            channelKey: 'awesome_notifications',
-            channelName: 'Basic notifications',
-            channelDescription: 'Notification channel for basic tests',
-            defaultColor: Color(0xFF9D50DD),
-            ledColor: Colors.white)
-      ],
-      debug: true
-  );
-
-  dev.log("done");
-
-
-  /*
-  var cron = new Cron();
-  cron.schedule(Schedule.parse("3 * * * *"), () async {
-
-    scheduleQuestions();
-    dev.log("cron called");
-    await Future.delayed(Duration(seconds: 40));
-    //await cron.close();
-  });
-*/
-
-
-
-
-
-
-
-
-
-
-
+  ///load the box into chache memory for fast access
+  await Hive.openBox<List>("Globals");
+  await Hive.openBox<bool>("Permissions");
 
 
 
   runApp(const MyApp());
 }
 
+
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
   void initState(){
-    void sendNotification(int hour, int minute, String question, String ans1, String ans2, String ans3) async {
-
-      if(!globals.notificationsAllowed){
-        return;
-      }
-      await AwesomeNotifications().createNotification(
-          content: NotificationContent(
-            id: 100,
-            channelKey: "basic_channel",
-            title: question,
-            body: "test",
-            //notificationLayout: NotificationLayout.BigPicture,
-            //largeIcon: "https://avidabloga.files.wordpress.com/2012/08/emmemc3b3riadeneilarmstrong3.jpg",
-            //bigPicture: "https://www.dw.com/image/49519617_303.jpg",
-            showWhen: true,
-          ),
-          actionButtons: [
-            NotificationActionButton(
-              key: "a1",
-              label: ans1,
-              enabled: true,
-              buttonType: ActionButtonType.Default,
-            ),
-            NotificationActionButton(
-              key: "a2",
-              label: ans2,
-              enabled: true,
-              buttonType: ActionButtonType.Default,
-            ),
-            NotificationActionButton(
-              key: "a3",
-              label: ans3,
-              enabled: true,
-              buttonType: ActionButtonType.Default,
-            )
-          ],
-          schedule: NotificationCalendar.fromDate(date: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour, DateTime.now().minute + 1))
-        //schedule: NotificationCalendar.fromDate(date: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, hour, minute))
-      );
-    }
-
-    void cancelAllNotifications(){
-      AwesomeNotifications().cancelAll();
-    }
-
-
-
+    ///check for notification permissions
     AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-      globals.notificationsAllowed = isAllowed;
+      notificationsAllowed();
       if (!isAllowed) {
         AwesomeNotifications().requestPermissionToSendNotifications();
       }
     });
-
-
-
-    dev.log("here");
   }
 
   // This widget is the root of your application.
@@ -169,15 +81,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
+
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(),
