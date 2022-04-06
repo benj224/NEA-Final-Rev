@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:developer';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -170,6 +171,10 @@ class _CreatePackState extends State<CreatePack> {
                        // log(pcks.length.toString());
 
                         globals.questions = [];
+
+                        AwesomeNotifications().cancelAll();
+                        scheduleQuestions();
+
 
                         ///schedule questions
                         Navigator.push(context,
