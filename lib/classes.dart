@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:cron/cron.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -10,19 +11,20 @@ import 'dart:developer' as dev;
 import 'globals.dart' as globals;
 import 'createpack.dart';
 import 'makequestion.dart';
+import 'settings.dart' as settings;
 
 part 'classes.g.dart';
 
 
 bool isNotificationsAllowed(){
-  Box box = Hive.box("Permissions");
+  Box box = Hive.box<bool>("Permissions");
 
   bool allowed = box.get("notifications", defaultValue: false);
   return allowed;
 }
 
 void notificationsAllowed(){
-  Box box = Hive.box("Permissions");
+  Box box = Hive.box<bool>("Permissions");
   box.put("notifications", true);
 }
 
@@ -116,6 +118,8 @@ void sendNotification(int hour, int minute, String question, String ans1, String
     dev.log("was false");
     return;
   }
+
+
   await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: 100,
@@ -151,6 +155,7 @@ void sendNotification(int hour, int minute, String question, String ans1, String
 
 
 void scheduleQuestions() async{
+
   var rng = Random();
 
   late Box box;
@@ -162,40 +167,46 @@ void scheduleQuestions() async{
 
   List<HivePack> _packList = box.get("packs", defaultValue: <HivePack>[]).cast<HivePack>();
   dev.log(_packList.length.toString());
+
+
+  int earliest = settings.startTime.hour*60 + settings.startTime.minute;
+  int latest = settings.endTime.hour*60 + settings.endTime.minute;
+
   _packList.forEach((pack) {
     List<HiveQuestion> qstList = [];
-    dev.log("question list length");
-    dev.log(pack.questions.length.toString());
     pack.questions.forEach((question) {
-      dev.log(question.question);
       int score = 0;
       for(int i = 0; i < 6; i++){
-        dev.log("boom");
-        score += question.pastAnswers[i] * 6;
+        score += question.pastAnswers[i] * (i + 1);
       }
       dev.log("score: ");
       dev.log(score.toString());
       for(int n = 0; n < score; n++){
-        dev.log("pow");
         qstList.add(question);
       }
     });
-    double hourIndex = 14/pack.frequency;
+
+
+    int step = ((latest - earliest)/pack.frequency).toInt();
+
+
     for(int x = 0; x < pack.frequency; x++){
       HiveQuestion qst = qstList[0];
       if(qstList.length > 1){
-        HiveQuestion qst = qstList.removeAt(rng.nextInt(qstList.length)-1);
+        qst = qstList.removeAt(rng.nextInt(qstList.length)-1);
       }else{
-        HiveQuestion qst = qstList.removeAt(0);
+        qst = qstList.removeAt(0);
       }
 
-      int earliest = x*hourIndex.toInt()*60;
-      int latest = (x+1)*hourIndex.toInt()*60;
-      int min = rng.nextInt(latest-earliest) + earliest;
-      int hours = min ~/ 60;
-      int mins = min % 60;
+      int minutes = rng.nextInt(step * (x+1));
+      ///continue from here
 
-      dev.log(hours.toString() + " : " + mins.toString() );
+      //int earliest = x*hourIndex.toInt()*60;
+      //int latest = (x+1)*hourIndex.toInt()*60;
+
+
+
+
 
       String corr = "";
 

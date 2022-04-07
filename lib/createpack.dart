@@ -172,8 +172,6 @@ class _CreatePackState extends State<CreatePack> {
 
                         globals.questions = [];
 
-                        AwesomeNotifications().cancelAll();
-                        scheduleQuestions();
 
 
                         ///schedule questions

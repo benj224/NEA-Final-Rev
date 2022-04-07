@@ -91,6 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       AwesomeNotifications().createdStream.listen((ReceivedNotification notification) {
         print("Notification created: "+(notification.title ?? notification.body ?? notification.id.toString()));
+        print(notification.summary);
       });
 
       AwesomeNotifications().displayedStream.listen((ReceivedNotification notification) {

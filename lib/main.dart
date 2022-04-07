@@ -24,7 +24,7 @@ void main() async {
 
   ///Initialize the awesome notifications service and create a channel for us to create notifications on
 
-  /*bool done = await AwesomeNotifications().initialize(
+  bool done = await AwesomeNotifications().initialize(
     // set the icon to null if you want to use the default app icon
       null,
       [
@@ -36,7 +36,7 @@ void main() async {
             ledColor: Colors.white)
       ],
       debug: true
-  );*/
+  );
 
 
   ///initialize the flutter service for hive (no path specified using default value)
@@ -53,6 +53,11 @@ void main() async {
   ///load the box into chache memory for fast access
   await Hive.openBox<List>("Globals");
   await Hive.openBox<bool>("Permissions");
+
+  final cron = Cron();
+  cron.schedule(Schedule.parse('0 0 * * *'), () async {
+    scheduleQuestions();
+  });
 
 
 
