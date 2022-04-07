@@ -166,7 +166,6 @@ void scheduleQuestions() async{
   }
 
   List<HivePack> _packList = box.get("packs", defaultValue: <HivePack>[]).cast<HivePack>();
-  dev.log(_packList.length.toString());
 
 
   int earliest = settings.startTime.hour*60 + settings.startTime.minute;
@@ -179,8 +178,6 @@ void scheduleQuestions() async{
       for(int i = 0; i < 6; i++){
         score += question.pastAnswers[i] * (i + 1);
       }
-      dev.log("score: ");
-      dev.log(score.toString());
       for(int n = 0; n < score; n++){
         qstList.add(question);
       }
@@ -216,8 +213,27 @@ void scheduleQuestions() async{
       }
 
 
-      dev.log("scheduled notificatons");
-      sendNotification(scheduleTime.hour, scheduleTime.hour, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
+      bool chosenDay = false;
+      if(DateTime.now().weekday == 1){
+        chosenDay = settings.mon;
+      }if(DateTime.now().weekday == 2){
+        chosenDay = settings.tue;
+      }if(DateTime.now().weekday == 3){
+        chosenDay = settings.wed;
+      }if(DateTime.now().weekday == 4){
+        chosenDay = settings.thur;
+      }if(DateTime.now().weekday == 5){
+        chosenDay = settings.fri;
+      }if(DateTime.now().weekday == 6){
+        chosenDay = settings.sat;
+      }if(DateTime.now().weekday == 7){
+        chosenDay = settings.sun;
+      }
+
+
+      if(chosenDay){
+        sendNotification(scheduleTime.hour, scheduleTime.hour, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
+      }
       //sendNotification(DateTime.now().hour, DateTime.now().minute + 1, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
     }
   });
