@@ -198,11 +198,8 @@ void scheduleQuestions() async{
         qst = qstList.removeAt(0);
       }
 
-      int minutes = rng.nextInt(step * (x+1));
-      ///continue from here
-
-      //int earliest = x*hourIndex.toInt()*60;
-      //int latest = (x+1)*hourIndex.toInt()*60;
+      int minutes = rng.nextInt(step) + (x * step);
+      DateTime scheduleTime = DateTime.now().add(Duration(minutes: minutes + earliest));
 
 
 
@@ -220,7 +217,7 @@ void scheduleQuestions() async{
 
 
       dev.log("scheduled notificatons");
-      sendNotification(hours, mins, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
+      sendNotification(scheduleTime.hour, scheduleTime.hour, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
       //sendNotification(DateTime.now().hour, DateTime.now().minute + 1, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
     }
   });

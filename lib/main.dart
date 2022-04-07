@@ -15,6 +15,10 @@ import 'classes.dart';
 import 'home.dart';
 
 
+///TODO implement the dow
+///TODO add box ot change frequesncy of pack
+///TODO add sort by filter
+
 
 
 
