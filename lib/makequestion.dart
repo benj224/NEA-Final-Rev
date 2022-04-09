@@ -12,6 +12,7 @@ class MakeQuestion extends StatefulWidget{
   MakeQuestion({required this.question}):super();
   Question question;
 
+  ///instantiate the variables used for the fields
   TextEditingController qstCont = TextEditingController();
   TextEditingController ans1Cont = TextEditingController();
   TextEditingController ans2Cont = TextEditingController();
@@ -28,6 +29,8 @@ class MakeQuestion extends StatefulWidget{
 
 class _MakeQuestionState extends State<MakeQuestion> {
 
+
+  ///populates the boxes to show the past answers
   List<Widget> showPastAns(){
     List<Widget> outBoxes = [];
     outBoxes.add(Text("Past Answers: "));
@@ -45,6 +48,7 @@ class _MakeQuestionState extends State<MakeQuestion> {
   @override
   void initState(){
     super.initState();
+    ///if edititng and exitsing question load values in
     widget.qstCont.text = widget.question.question;
     widget.ans1Cont.text = widget.question.answers[0].text;
     widget.ans2Cont.text = widget.question.answers[1].text;
@@ -59,6 +63,7 @@ class _MakeQuestionState extends State<MakeQuestion> {
   @override
   Widget build(BuildContext context){
     return Scaffold(
+      ///top bar with question field
       appBar: AppBar(title: TextField(
         style: TextStyle(color: Colors.white, fontSize: 18),
         controller: widget.qstCont,
@@ -82,9 +87,12 @@ class _MakeQuestionState extends State<MakeQuestion> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  ///display the past answers
                   Row(
                       children: showPastAns()
                   ),
+
+                  ///show the times attempted and correct
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text("Times Attempted: " + widget.question.hiveQuestion.attempted.toString()),
@@ -94,6 +102,7 @@ class _MakeQuestionState extends State<MakeQuestion> {
                     child: Text("Times Correct: " + widget.question.hiveQuestion.correct.toString()),
                   ),
 
+                  ///check boxes and text fields for 3 answers
                   Row(
                     children: [
                       Align(
@@ -201,6 +210,7 @@ class _MakeQuestionState extends State<MakeQuestion> {
 
       floatingActionButton: Stack(
         children: [
+          ///button to save question and go back to make pack page
           Align(
             alignment: FractionalOffset(0.9, 0.95),
             child: FloatingActionButton(
@@ -260,6 +270,8 @@ class _MakeQuestionState extends State<MakeQuestion> {
                 }
             ),
           ),
+
+          ///go back to create pack page without saving changes
           Align(
             alignment: FractionalOffset(0.1, 0.95),
             child: FloatingActionButton(
@@ -269,6 +281,8 @@ class _MakeQuestionState extends State<MakeQuestion> {
                 }
             ),
           ),
+
+          ///delete question and retrun to create pack page
           Align(
             alignment: FractionalOffset(0.5, 0.95),
             child: FloatingActionButton(
