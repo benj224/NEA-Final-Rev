@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:cron/cron.dart';
@@ -6,6 +7,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'dart:developer' as dev;
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 //import 'package:build_runner/build_runner.dart';
 
 
@@ -58,14 +60,30 @@ void main() async {
   await Hive.openBox<List>("Globals");
   await Hive.openBox<bool>("Permissions");
 
-  final cron = Cron();
+  /*final cron = Cron();
   cron.schedule(Schedule.parse('0 0 * * *'), () async {
     scheduleQuestions();
-  });
+  });*/
 
+  final int alarmID = 0;
+  await AndroidAlarmManager.initialize();
 
+  /*runApp(const MyApp());
+  await AndroidAlarmManager.periodic(
+      const Duration(hours: 24),
+      alarmID,
+      scheduleQuestions,
+      wakeup: false,
+      startAt: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().add(Duration(hours: 24)).day, 0, 0 ));*/
 
   runApp(const MyApp());
+
+
+  await AndroidAlarmManager.periodic(
+  const Duration(minutes: 3),
+  alarmID,
+  scheduleQuestions,
+  wakeup: false);
 }
 
 
