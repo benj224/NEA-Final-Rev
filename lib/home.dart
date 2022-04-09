@@ -106,12 +106,18 @@ class _MyHomePageState extends State<MyHomePage> {
         print("Action received!");
         dev.log(action.buttonKeyPressed);
 
-        //getPacks();
+        ///when a notifications is answered
         List<HivePack> packList = loadPacks();
+
+        ///itterate through packs to find one with a title that matches that of the payload
         packList.forEach((pack) {
           if(pack.title == action.payload!["name"]){
+
+            ///find the question in the pack that has the same question as the payload
             pack.questions.forEach((question) {
               if(question.question == action.payload!["question"]){
+
+                ///if the button clicked was the correct button increase the correct count
                 if(((action.payload!["correct"] == "0") & (action.buttonKeyPressed == "a1")) | ((action.payload!["correct"] == "1") & (action.buttonKeyPressed == "a2")) | (action.payload!["correct"] == "2") & (action.buttonKeyPressed == "a3")){
                   question.pastAnswers = correct(question.pastAnswers);
                   question.attempted += 1;
@@ -156,12 +162,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: MediaQuery.of(context).size.height - 136,
                 child: Stack(
                   children: [
+                    ///List that will contain all the packs
                     ListView(
                       scrollDirection: Axis.vertical,
                       children: getPacks(),
                     ),
 
                     Align(
+                      ///button to add a new pack
                         alignment: FractionalOffset(0.9, 0.95),
                           child: FloatingActionButton(
                             child: Icon(Icons.add),
@@ -171,7 +179,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             },
                         )
                     ),
+
                     Align(
+                      ///button to go to settings
                       alignment: FractionalOffset(0.1, 0.95),
                       child: FloatingActionButton(
                         child: Icon(Icons.settings),

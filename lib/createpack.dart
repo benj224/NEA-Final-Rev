@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -30,6 +31,7 @@ class _CreatePackState extends State<CreatePack> {
   void initState() {
     super.initState();
 
+    ///if the page opened from an existing pack load the questions into the list view
     widget.pack.hivePack.questions.forEach((element) {
       log(element.question);
       if(!globals.questions.contains(element)){
@@ -37,6 +39,8 @@ class _CreatePackState extends State<CreatePack> {
       }
     });
 
+
+    ///if a question has just been crated load the question into the packs questions
     if(!(globals.newQuestion == null)){
       if(!widget.pack.hivePack.questions.contains(globals.newQuestion!.hiveQuestion)){
         log("pack qustions didnt contain");
@@ -49,12 +53,14 @@ class _CreatePackState extends State<CreatePack> {
       }
       globals.newQuestion = null;
     }
-    /// add something for new pack check
 
 
+    ///when editing existing pack set the title controller to the pack title
     titleController.text = widget.pack.name;
   }
 
+
+  ///Load packs from the database form of HivePack to a widget form of Pack
   List<Question> loadQuestions(){
     List<Question> outList = [];
     globals.questions.forEach((element) {
@@ -68,6 +74,7 @@ class _CreatePackState extends State<CreatePack> {
   @override
   Widget build(context) {
     return Scaffold(
+      ///top app bar with title box in
         appBar: AppBar(title: TextField(
           style: TextStyle(color: Colors.white, fontSize: 18),
           controller: titleController,
@@ -83,20 +90,28 @@ class _CreatePackState extends State<CreatePack> {
         ),
         body: Stack(
           children: [
+            SpinBox(
+              min: 1,
+              max: 30,
+              value: 6,
+              step: 1,
+              onChanged: (value) {
+                widget.pack.hivePack.frequency = value.toInt();
+              }
+            ),
+            ///List of questions
             ListView(children: loadQuestions()),
-
-
-
             Stack(
               alignment: Alignment.center,
               children: [
                 Align(
                   alignment: FractionalOffset(0.9, 0.95),
+
+                  ///button to add new question
                   child: FloatingActionButton(
                     child: Icon(Icons.add),
                     onPressed: () {
                       setState(() {
-                        /// add new page for creating question instead.
                         widget.pack.name = titleController.text;
                         widget.pack.hivePack.title = titleController.text;
                         globals.newPack = widget.pack;
@@ -127,6 +142,7 @@ class _CreatePackState extends State<CreatePack> {
                 ),
 
 
+                ///save the pack and go back to the home page
                 Align(
                   alignment: FractionalOffset(0.1, 0.95),
                   child: FloatingActionButton(
@@ -162,30 +178,20 @@ class _CreatePackState extends State<CreatePack> {
                         widget.pack.name = titleController.text;
                         widget.pack.hivePack.title = titleController.text;
 
-
-
                         addPack(widget.pack.hivePack);
-
-
-
-                       // log(pcks.length.toString());
 
                         globals.questions = [];
 
-
-
-                        ///schedule questions
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) => MyHomePage()));
                         log("no overflow yet");
                       }
-
-                      ///might error cos pcks is dynamic
-
                     },
                     tooltip: 'Done',
                   ),
                 ),
+
+                ///delete the pack and go back to home page
                 Align(
                     alignment: FractionalOffset(0.5, 0.95),
                       child: FloatingActionButton(

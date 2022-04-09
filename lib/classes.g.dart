@@ -1,6 +1,8 @@
 part of 'classes.dart';
 
 
+///code for the hive database system to adapt from Hive Pack direct to database storage
+
 class HivePackAdapter extends TypeAdapter<HivePack> {
   @override
   final int typeId = 10;

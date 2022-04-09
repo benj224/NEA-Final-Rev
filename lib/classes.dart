@@ -231,10 +231,10 @@ void scheduleQuestions() async{
       }
 
 
-      if(chosenDay){
-        sendNotification(scheduleTime.hour, scheduleTime.hour, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
-      }
-      //sendNotification(DateTime.now().hour, DateTime.now().minute + 1, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
+      //if(chosenDay){
+      //  sendNotification(scheduleTime.hour, scheduleTime.hour, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
+      //}
+      sendNotification(DateTime.now().hour, DateTime.now().minute + 1, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
     }
   });
 }
