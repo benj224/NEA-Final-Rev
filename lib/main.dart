@@ -60,16 +60,14 @@ void main() async {
   await Hive.openBox<List>("Globals");
   await Hive.openBox<bool>("Permissions");
 
-<<<<<<< HEAD
+
+
   /*final cron = Cron();
-  cron.schedule(Schedule.parse('0 0 * * *'), () async {
-=======
-  final cron = Cron();
   String time = (DateTime.now().minute + 2).toString() + " " + DateTime.now().hour.toString() + " " + DateTime.now().day.toString() + " " + DateTime.now().month.toString() + " *";
   //cron.schedule(Schedule.parse('0 0 * * *'), () async {
   cron.schedule(Schedule.parse(time), () async{
     log(time);
->>>>>>> fd24fcc25c87a08c2269a3d7ad58ba2fa054e601
+
     scheduleQuestions();
   });*/
 
