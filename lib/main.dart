@@ -59,7 +59,10 @@ void main() async {
   await Hive.openBox<bool>("Permissions");
 
   final cron = Cron();
-  cron.schedule(Schedule.parse('0 0 * * *'), () async {
+  String time = (DateTime.now().minute + 2).toString() + " " + DateTime.now().hour.toString() + " " + DateTime.now().day.toString() + " " + DateTime.now().month.toString() + " *";
+  //cron.schedule(Schedule.parse('0 0 * * *'), () async {
+  cron.schedule(Schedule.parse(time), () async{
+    log(time);
     scheduleQuestions();
   });
 

@@ -108,6 +108,11 @@ void addPack(HivePack pack) async{
 
 
 void sendNotification(int hour, int minute, String question, String ans1, String ans2, String ans3, String correct, String packName) async {
+  DateTime tm = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, hour, minute);
+  if(tm.isBefore(DateTime.now())){
+    scheduleQuestions();
+    return;
+  }
   dev.log("is executing");
 
   if(!isNotificationsAllowed()){
@@ -119,6 +124,9 @@ void sendNotification(int hour, int minute, String question, String ans1, String
     return;
   }
 
+
+
+  dev.log("Scheduled: " + tm.toString());
 
   await AwesomeNotifications().createNotification(
       content: NotificationContent(
