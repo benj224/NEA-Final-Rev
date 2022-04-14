@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:cron/cron.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'dart:developer' as dev;
@@ -30,18 +31,17 @@ void notificationsAllowed(){
 
 
 
-List<Widget> getPacks(){
-  Box box = Hive.box<List>("Globals");
-  List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]).cast<HivePack>();
-  dev.log("packs length " + packs.length.toString());
+/*List<Widget> getPacks() async {
 
-  List<Pack> outPacks = [];
 
-  packs.forEach((element) {
-    outPacks.add(Pack(enabled: true, name: element.title, hivePack: element,));
-  });
 
-  if(outPacks.isEmpty){
+  final String response = await rootBundle.loadString('assets/sample.json');
+  final data = await json.decode(response);
+
+  dev.log(response);
+  dev.log(data);
+
+  /*if(outPacks.isEmpty){
     return [
       Material(
         elevation: 5,
@@ -62,14 +62,19 @@ List<Widget> getPacks(){
         ),
       ),
     ];
-  }
+  }*/
 
   return outPacks;
-}
+}*/
 
 
-void deletePack(HivePack pack){
-  Box box = Hive.box<List>("Globals");
+void deletePack(HivePack pack) async{
+  late Box box;
+  if(Hive.isBoxOpen("Globals")){
+    box = Hive.box<List>("Globals");
+  }else{
+    box = await Hive.openBox<List>("Globals");
+  }
   List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]).cast<HivePack>();
 
   packs.removeWhere((element) => element == pack);
@@ -78,15 +83,18 @@ void deletePack(HivePack pack){
 }
 
 
-List<HivePack> loadPacks(){
-  Box box = Hive.box<List>("Globals");
-  List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]).cast<HivePack>();
-  return packs;
+List<HivePack> loadPacks() {
+  return [];
 }
 
 
 void addPack(HivePack pack) async{
-  Box box = Hive.box<List>("Globals");
+  late Box box;
+  if(Hive.isBoxOpen("Globals")){
+    box = Hive.box<List>("Globals");
+  }else{
+    box = await Hive.openBox<List>("Globals");
+  }
   List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]).cast<HivePack>();
   dev.log("before adding " + packs.length.toString());
 
@@ -99,6 +107,7 @@ void addPack(HivePack pack) async{
 
   dev.log("before putting " + packs.length.toString());
   await box.put("packs", packs);
+  box.close();
 }
 
 
@@ -163,6 +172,8 @@ void sendNotification(int hour, int minute, String question, String ans1, String
 
 
 void scheduleQuestions() async{
+
+  Hive.initFlutter();
 
   var rng = Random();
 

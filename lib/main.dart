@@ -1,13 +1,13 @@
-import 'dart:developer';
-import 'dart:html';
+import 'dart:convert';
+import 'dart:developer' as dev;
+
 
 import 'package:flutter/material.dart';
 import 'package:cron/cron.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:giffy_dialog/giffy_dialog.dart';
-import 'dart:developer' as dev;
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:flutter/services.dart';
+import 'package:workmanager/workmanager.dart';
 //import 'package:build_runner/build_runner.dart';
 
 
@@ -23,6 +23,12 @@ import 'home.dart';
 
 
 
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) {
+    scheduleQuestions(); //simpleTask will be emitted here.
+    return Future.value(true);
+  });
+}
 
 
 
@@ -45,51 +51,30 @@ void main() async {
   );
 
 
-  ///initialize the flutter service for hive (no path specified using default value)
-  await Hive.initFlutter();
+
+  final String response = await rootBundle.loadString('assets/packs.json');
 
 
-  ///register hive type adapters for storing items of the hive classes defined in classes.dart
-  Hive.registerAdapter(HivePackAdapter());
-  Hive.registerAdapter(HiveQuestionAdapter());
-  Hive.registerAdapter(HiveAnswerAdapter());
+  dev.log(response);
 
 
 
-  ///load the box into chache memory for fast access
-  await Hive.openBox<List>("Globals");
-  await Hive.openBox<bool>("Permissions");
+
+  Workmanager().initialize(
+      callbackDispatcher, // The top level function, aka callbackDispatcher
+      isInDebugMode: true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
+  );
+  Workmanager().registerOneOffTask(
+      "1",
+      "simpleTask",
+      initialDelay: Duration(minutes: 1)
+  ); //Android only (see below)
 
 
 
-  /*final cron = Cron();
-  String time = (DateTime.now().minute + 2).toString() + " " + DateTime.now().hour.toString() + " " + DateTime.now().day.toString() + " " + DateTime.now().month.toString() + " *";
-  //cron.schedule(Schedule.parse('0 0 * * *'), () async {
-  cron.schedule(Schedule.parse(time), () async{
-    log(time);
-
-    scheduleQuestions();
-  });*/
-
-  final int alarmID = 0;
-  await AndroidAlarmManager.initialize();
-
-  /*runApp(const MyApp());
-  await AndroidAlarmManager.periodic(
-      const Duration(hours: 24),
-      alarmID,
-      scheduleQuestions,
-      wakeup: false,
-      startAt: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().add(Duration(hours: 24)).day, 0, 0 ));*/
 
   runApp(const MyApp());
 
-
-  await AndroidAlarmManager.periodic(
-  const Duration(minutes: 3),
-  alarmID,
-  scheduleQuestions,
-  wakeup: false);
 }
 
 

@@ -165,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ///List that will contain all the packs
                     ListView(
                       scrollDirection: Axis.vertical,
-                      children: getPacks(),
+                      children: [],
                     ),
 
                     Align(
