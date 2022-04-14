@@ -41,6 +41,9 @@ dependencies:
   cron: ^0.4.1
   android_alarm_manager_plus: ^2.0.5
   workmanager: ^0.4.1
+  localstorage: ^4.0.0+1
+  sqflite: ^2.0.2
+  path: ^1.8.0
 
 
 dev_dependencies:

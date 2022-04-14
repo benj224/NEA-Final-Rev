@@ -1,14 +1,17 @@
 import 'dart:convert';
 import 'dart:developer' as dev;
+import 'dart:html';
 import 'dart:io' as io;
-
+import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:cron/cron.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/services.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:workmanager/workmanager.dart';
+import 'package:localstorage/localstorage.dart';
 //import 'package:build_runner/build_runner.dart';
 
 
@@ -32,13 +35,11 @@ void callbackDispatcher() {
 }
 
 
-loadJson() async {
-  String response = await rootBundle.loadString('/assets/packs.json');
-  dev.log(response);
-  final data = await json.decode(response);
 
-  dev.log(data);
-}
+
+
+
+
 
 
 
@@ -61,14 +62,14 @@ void main() async {
   );*/
 
 
-  final myDir = io.Directory("dir");
-  dev.log(myDir.path);
-  loadJson();
+  ///look at shared prefrences
+  
 
 
 
 
-  Workmanager().initialize(
+
+  /*Workmanager().initialize(
       callbackDispatcher, // The top level function, aka callbackDispatcher
       isInDebugMode: true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
   );
@@ -76,7 +77,7 @@ void main() async {
       "1",
       "simpleTask",
       initialDelay: Duration(minutes: 1)
-  ); //Android only (see below)
+  ); */
 
 
 
