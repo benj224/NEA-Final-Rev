@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer' as dev;
+import 'dart:io' as io;
 
 
 import 'package:flutter/material.dart';
@@ -31,12 +32,21 @@ void callbackDispatcher() {
 }
 
 
+loadJson() async {
+  String response = await rootBundle.loadString('/assets/packs.json');
+  dev.log(response);
+  final data = await json.decode(response);
+
+  dev.log(data);
+}
+
+
 
 void main() async {
 
   ///Initialize the awesome notifications service and create a channel for us to create notifications on
 
-  bool done = await AwesomeNotifications().initialize(
+  /*bool done = await AwesomeNotifications().initialize(
     // set the icon to null if you want to use the default app icon
       null,
       [
@@ -48,14 +58,12 @@ void main() async {
             ledColor: Colors.white)
       ],
       debug: true
-  );
+  );*/
 
 
-
-  final String response = await rootBundle.loadString('assets/packs.json');
-
-
-  dev.log(response);
+  final myDir = io.Directory("dir");
+  dev.log(myDir.path);
+  loadJson();
 
 
 

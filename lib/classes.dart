@@ -18,15 +18,11 @@ part 'classes.g.dart';
 
 
 bool isNotificationsAllowed(){
-  Box box = Hive.box<bool>("Permissions");
-
-  bool allowed = box.get("notifications", defaultValue: false);
-  return allowed;
+  return true;
 }
 
 void notificationsAllowed(){
-  Box box = Hive.box<bool>("Permissions");
-  box.put("notifications", true);
+
 }
 
 
@@ -69,17 +65,7 @@ void notificationsAllowed(){
 
 
 void deletePack(HivePack pack) async{
-  late Box box;
-  if(Hive.isBoxOpen("Globals")){
-    box = Hive.box<List>("Globals");
-  }else{
-    box = await Hive.openBox<List>("Globals");
-  }
-  List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]).cast<HivePack>();
 
-  packs.removeWhere((element) => element == pack);
-
-  box.put("packs", packs);
 }
 
 
@@ -89,25 +75,7 @@ List<HivePack> loadPacks() {
 
 
 void addPack(HivePack pack) async{
-  late Box box;
-  if(Hive.isBoxOpen("Globals")){
-    box = Hive.box<List>("Globals");
-  }else{
-    box = await Hive.openBox<List>("Globals");
-  }
-  List<HivePack> packs = box.get("packs", defaultValue: <HivePack>[]).cast<HivePack>();
-  dev.log("before adding " + packs.length.toString());
 
-
-
-  if(!packs.contains(pack)){
-    packs.add(pack);
-  }
-
-
-  dev.log("before putting " + packs.length.toString());
-  await box.put("packs", packs);
-  box.close();
 }
 
 
@@ -173,18 +141,12 @@ void sendNotification(int hour, int minute, String question, String ans1, String
 
 void scheduleQuestions() async{
 
-  Hive.initFlutter();
+
 
   var rng = Random();
 
-  late Box box;
-  if(Hive.isBoxOpen("Globals")){
-    box = Hive.box<List>("Globals");
-  }else{
-    box = await Hive.openBox<List>("Globals");
-  }
 
-  List<HivePack> _packList = box.get("packs", defaultValue: <HivePack>[]).cast<HivePack>();
+  List<HivePack> _packList = [];
 
 
   int earliest = settings.startTime.hour*60 + settings.startTime.minute;
@@ -263,49 +225,83 @@ void scheduleQuestions() async{
 
 
 
-@HiveType(typeId: 10)
-class HivePack extends HiveObject{
+
+class HivePack {
   HivePack({required this.title, required this.questions, required this.enabled, required this.frequency}) : super();
-  @HiveField(11)
+
   String title;
-  @HiveField(12)
+
   List<HiveQuestion> questions;
-  @HiveField(13)
+
   bool enabled;
-  @HiveField(14)
+
   int frequency;
+
+  HivePack.fromJson(Map<String, dynamic> json)
+      : title = json["title"],
+        questions = List<HiveQuestion>.from(json["questions"]((model) => HiveQuestion.fromJson(model))),
+        enabled = json["enabled"],
+        frequency = json["frequency"];
+
+
+  Map<String, dynamic> toJson() => {
+    "title": title,
+    "questions" : questions,
+    "enabled" : enabled,
+    "frequency" : frequency,
+  };
 }
 
 
 
-@HiveType(typeId: 20)
 class HiveQuestion extends HiveObject{
   HiveQuestion(
       {required this.cardNo, required this.question, required this.answers, required this.attempted, required this.correct, required this.pastAnswers})
       : super();
-  @HiveField(21)
-  int cardNo;///probs change this
-  @HiveField(22)
+  int cardNo;
   String question;
-  @HiveField(23)
   List<HiveAnswer> answers;
-  @HiveField(24)
   int attempted;
-  @HiveField(25)
   int correct;
-  @HiveField(26)
   List<int> pastAnswers;
+
+
+  HiveQuestion.fromJson(Map<String, dynamic> json)
+  : cardNo = json["cardno"],
+  question = json["question"],
+  answers = List<HiveAnswer>.from(json["answers"]((model) => HiveAnswer.fromJson(model))),
+  attempted = json["attempted"],
+  correct = json["correct"],
+  pastAnswers = json["pastanswers"];
+
+
+
+  Map<String, dynamic> toJson() => {
+    "cardno" : cardNo,
+    "question" : question,
+    "answers" : answers,
+    "attempted" : attempted,
+    "correct" : correct,
+    "pastAnswers" : pastAnswers,
+  };
 }
 
 
 
-@HiveType(typeId: 30)
+
 class HiveAnswer extends HiveObject{
   HiveAnswer({required this.text, required this.correct}) : super();
-  @HiveField(31)
   String text;
-  @HiveField(32)
   bool correct;
+
+  HiveAnswer.fromJson(Map<String, dynamic> json)
+    : text = json["text"],
+    correct = json["correct"];
+
+  Map<String, dynamic> toJson() => {
+    "text" : text,
+    "correct" : correct,
+  };
 }
 
 
