@@ -14,8 +14,9 @@ import 'home.dart';
 
 
 
-///TODO add box ot change frequesncy of pack
 ///TODO add sort by filter
+///TODO sort settings page
+///
 
 
 

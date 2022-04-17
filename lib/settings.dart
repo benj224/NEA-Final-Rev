@@ -147,7 +147,7 @@ class _SettingsState extends State<Settings> {
 
           ///Chose minimum time
           Align(
-            alignment: FractionalOffset(0.6, 0.15),
+            alignment: FractionalOffset(0.75, 0.15),
             child: GestureDetector(
               onTap: () async {
                 final TimeOfDay? newStart = await showTimePicker(
@@ -177,7 +177,7 @@ class _SettingsState extends State<Settings> {
 
           ///chose maximum time
           Align(
-            alignment: FractionalOffset(0.6, 0.2),
+            alignment: FractionalOffset(0.75, 0.2),
             child: GestureDetector(
                 onTap: () async {
                   final TimeOfDay? newEnd = await showTimePicker(

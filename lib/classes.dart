@@ -166,6 +166,9 @@ List<Widget> loadPacks(){
 
 ///load json from storage
   String? pcks = globals.pref.getString("packs");///using globals so that function no asyncronus
+  if(pcks == null){
+    pcks = "{}";
+  }
   List<HivePack> packs = [];
   packs = pcksFromJson(pcks);
 
