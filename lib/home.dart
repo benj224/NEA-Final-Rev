@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -6,11 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:nea/settings.dart';
-import 'dart:developer' as dev;
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'globals.dart' as globals;
-import 'makequestion.dart';
 import 'createpack.dart';
 import 'classes.dart';
 
@@ -59,22 +56,30 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               onOkButtonPressed: () async {
                 Navigator.of(context).pop();
-                dev.log("exec 0");///probs not an issue on mobile
                 await AwesomeNotifications().requestPermissionToSendNotifications();
-                dev.log("exec 1");
                 bool allowed = await AwesomeNotifications().isNotificationAllowed();
-                dev.log("exec 2");
-                setState(() {
-                  if(allowed){
-                    notificationsAllowed();
-                  }
-                });
+                if(allowed){
+                  final prefs = await SharedPreferences.getInstance();
+                  prefs.setBool("notifications", true);
+                }
               },
             )
     );
   }
 
 
+
+  void checkNotifications() async{
+    final prefs = await SharedPreferences.getInstance();
+    if(prefs.getBool("notifications") == null){
+      prefs.setBool("notifications", false);
+    }
+    if(!prefs.getBool("notifications")){
+      Future.delayed(Duration.zero, (){
+        requestUserPermission();
+      });
+    }
+  }
 
 
 
@@ -104,10 +109,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
       AwesomeNotifications().actionStream.listen((ReceivedAction action) async {
         print("Action received!");
-        dev.log(action.buttonKeyPressed);
 
         ///when a notifications is answered
-        List<HivePack> packList = loadPacks();
+        List<HivePack> packList = await loadHivePacks();
 
         ///itterate through packs to find one with a title that matches that of the payload
         packList.forEach((pack) {
@@ -122,9 +126,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   question.pastAnswers = correct(question.pastAnswers);
                   question.attempted += 1;
                   question.correct += 1;
+                  deletePack(pack);
+                  addPack(pack);
                 }else{
                   question.pastAnswers = incorrect(question.pastAnswers);
                   question.attempted += 1;
+                  deletePack(pack);
+                  addPack(pack);
                 }
               }
             });
@@ -134,12 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
 
-    //check permissions for notification access
-    if(!isNotificationsAllowed()){
-      Future.delayed(Duration.zero, (){
-        requestUserPermission();
-      });
-    }
+    checkNotifications();
 
 
   }
@@ -164,11 +167,29 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: MediaQuery.of(context).size.height - 136,
                 child: Stack(
                   children: [
-                    ///List that will contain all the packs
+
                     ListView(
-                      scrollDirection: Axis.vertical,
-                      children: [],
+                      children: loadPacks(),
                     ),
+                    ///List that will contain all the packs
+                    /*FutureBuilder<List<Pack>>(
+                    builder: (context, projectSnap) {
+                      if (projectSnap.connectionState == ConnectionState.none && projectSnap.hasData == null) {
+                        return Container();
+                      }
+
+                      List<Pack> kids = [];
+                      print("data: ");
+                      print(projectSnap.data);
+                      if(projectSnap.data != null){
+                        kids = projectSnap.data!;
+
+                      }
+                      return ListView(
+                        children: kids,
+                      );},
+                      future: loadPacks(),
+                    ),*/
 
                     Align(
                       ///button to add a new pack

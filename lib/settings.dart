@@ -1,8 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_spinbox/material.dart';
-import 'package:nea/classes.dart';
 
 import 'home.dart';
 

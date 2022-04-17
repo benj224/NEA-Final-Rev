@@ -1,11 +1,10 @@
-import 'dart:collection';
+
 import 'dart:developer';
 
-import 'package:awesome_notifications/awesome_notifications.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 import 'classes.dart';
 import 'globals.dart' as globals;
@@ -178,6 +177,7 @@ class _CreatePackState extends State<CreatePack> {
                         widget.pack.name = titleController.text;
                         widget.pack.hivePack.title = titleController.text;
 
+                        deletePack(widget.pack.hivePack);
                         addPack(widget.pack.hivePack);
 
                         globals.questions = [];
