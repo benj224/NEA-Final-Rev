@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 
@@ -218,8 +216,6 @@ class _MakeQuestionState extends State<MakeQuestion> {
                 onPressed: ()async{
                   bool textChanged = !(widget.qstCont.text == "") & !(widget.ans1Cont == "") & !(widget.ans2Cont == "") & !(widget.ans3Cont == "");
                   bool hasAnswer = widget.a1corr | widget.a2corr | widget.a3corr;
-                  log(hasAnswer.toString());
-                  log(textChanged.toString());
                   if(textChanged & hasAnswer){
                     widget.question.question = widget.qstCont.text;
                     widget.question.answers[0].text = widget.ans1Cont.text;
@@ -239,7 +235,6 @@ class _MakeQuestionState extends State<MakeQuestion> {
                     widget.question.hiveQuestion.answers[2].correct = widget.a3corr;
 
                     globals.newQuestion = widget.question;
-                    log(widget.question.question);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack:  globals.newPack!)));
                   }else{
                     showDialog(

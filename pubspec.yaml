@@ -46,6 +46,8 @@ dependencies:
   path: ^1.8.0
   flutter_animated_button: ^2.0.0
   flutter_colorpicker: ^1.0.3
+  shared_preferences: ^0.5.5
+
 
 
 dev_dependencies:

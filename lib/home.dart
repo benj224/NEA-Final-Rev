@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -6,13 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:nea/settings.dart';
-import 'dart:developer' as dev;
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'globals.dart' as globals;
-import 'makequestion.dart';
 import 'createpack.dart';
 import 'classes.dart';
+import 'settings.dart' as settings;
 
 ///changes to make
 ///load all packs from hive in main function
@@ -59,22 +57,30 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               onOkButtonPressed: () async {
                 Navigator.of(context).pop();
-                dev.log("exec 0");///probs not an issue on mobile
                 await AwesomeNotifications().requestPermissionToSendNotifications();
-                dev.log("exec 1");
                 bool allowed = await AwesomeNotifications().isNotificationAllowed();
-                dev.log("exec 2");
-                setState(() {
-                  if(allowed){
-                    notificationsAllowed();
-                  }
-                });
+                if(allowed){
+                  final prefs = await SharedPreferences.getInstance();
+                  prefs.setBool("notifications", true);
+                }
               },
             )
     );
   }
 
 
+
+  void checkNotifications() async{
+    final prefs = await SharedPreferences.getInstance();
+    if(prefs.getBool("notifications") == null){
+      prefs.setBool("notifications", false);
+    }
+    if(!prefs.getBool("notifications")){
+      Future.delayed(Duration.zero, (){
+        requestUserPermission();
+      });
+    }
+  }
 
 
 
@@ -104,10 +110,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
       AwesomeNotifications().actionStream.listen((ReceivedAction action) async {
         print("Action received!");
-        dev.log(action.buttonKeyPressed);
 
         ///when a notifications is answered
-        List<HivePack> packList = loadPacks();
+        List<HivePack> packList = await loadHivePacks();
 
         ///itterate through packs to find one with a title that matches that of the payload
         packList.forEach((pack) {
@@ -122,9 +127,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   question.pastAnswers = correct(question.pastAnswers);
                   question.attempted += 1;
                   question.correct += 1;
+                  deletePack(pack);
+                  addPack(pack);
                 }else{
                   question.pastAnswers = incorrect(question.pastAnswers);
                   question.attempted += 1;
+                  deletePack(pack);
+                  addPack(pack);
                 }
               }
             });
@@ -134,12 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
 
-    //check permissions for notification access
-    if(!isNotificationsAllowed()){
-      Future.delayed(Duration.zero, (){
-        requestUserPermission();
-      });
-    }
+    checkNotifications();
 
 
   }
@@ -147,14 +151,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
+  int tabselected = 0;
+  final pages = [
+    MyHomePage(),
+    Settings(),
+    CreatePack(pack: null),
+  ];
+
 
 
   @override
   Widget build(context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.black,
           automaticallyImplyLeading: false,
           title: Text("Home"),
+          titleTextStyle: TextStyle(
+              fontSize: 28,
+              letterSpacing: 5,
+              color: color,
+              fontWeight: FontWeight.w300),
         ),
 
         body: Center(
@@ -164,41 +181,118 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: MediaQuery.of(context).size.height - 136,
                 child: Stack(
                   children: [
-                    ///List that will contain all the packs
+
                     ListView(
-                      scrollDirection: Axis.vertical,
-                      children: [],
+                      children: loadPacks(),
                     ),
+                    ///List that will contain all the packs
+                    /*FutureBuilder<List<Pack>>(
+                    builder: (context, projectSnap) {
+                      if (projectSnap.connectionState == ConnectionState.none && projectSnap.hasData == null) {
+                        return Container();
+                      }
 
-                    Align(
-                      ///button to add a new pack
-                        alignment: FractionalOffset(0.9, 0.95),
-                          child: FloatingActionButton(
-                            child: Icon(Icons.add),
-                            onPressed: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) => CreatePack(pack: Pack(enabled: true, name: "", hivePack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2),))));
-                            },
-                        )
-                    ),
+                      List<Pack> kids = [];
+                      print("data: ");
+                      print(projectSnap.data);
+                      if(projectSnap.data != null){
+                        kids = projectSnap.data!;
 
-                    Align(
-                      ///button to go to settings
-                      alignment: FractionalOffset(0.1, 0.95),
-                      child: FloatingActionButton(
-                        child: Icon(Icons.settings),
-                        onPressed: (){
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Settings()));
-                        },
-                      ),
-                    ),
+                      }
+                      return ListView(
+                        children: kids,
+                      );},
+                      future: loadPacks(),
+                    ),*/
+
+
                   ],
                 ),
               ),
             ],
           )
         ),
+
+      floatingActionButton: Stack(
+        children: [
+          Align(
+            ///button to add a new pack
+              alignment: FractionalOffset(0.9, 0.95),
+              child: FloatingActionButton(
+                backgroundColor: Colors.black,
+                foregroundColor: settings.color,
+                child: Icon(Icons.add),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => CreatePack(pack: Pack(enabled: true, name: "", hivePack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2),))));
+                },
+              )
+          ),
+
+          Align(
+            ///button to go to settings
+            alignment: FractionalOffset(0.1, 0.95),
+            child: FloatingActionButton(
+              backgroundColor: Colors.black,
+              foregroundColor: settings.color,
+              child: Icon(Icons.settings),
+              onPressed: (){
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Settings()));
+              },
+            ),
+          ),
+        ],
+      ),
+
+      bottomNavigationBar: NavigationBarTheme(
+        data: NavigationBarThemeData(
+          indicatorColor: Colors.grey.shade600,
+          backgroundColor: Colors.black,
+          labelTextStyle: MaterialStateProperty.all(
+            TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: settings.color),
+          ),
+        ),
+        child: NavigationBar(
+          height: 65,
+          selectedIndex: tabselected,
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+          animationDuration: Duration(seconds: 2),
+          onDestinationSelected: (index) {
+            setState(() {
+              tabselected = index;
+
+
+
+            });
+          },
+          destinations: [
+            NavigationDestination(
+              icon: Icon(Icons.home,
+                  color: settings.color,),
+              label: 'Home',
+              selectedIcon: Icon(Icons.home_outlined,
+              color: settings.color,),
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.settings,
+              color: settings.color,),
+              label: 'Settings',
+              selectedIcon: Icon(Icons.settings_outlined,
+              color: settings.color,),
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.add,
+              color: settings.color,),
+              label: 'Add',
+              selectedIcon: Icon(Icons.add_outlined,
+              color: settings.color,),
+            ),
+          ],
+        ),
+      ),
+
     );
+
   }
 }

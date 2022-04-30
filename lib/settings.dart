@@ -69,13 +69,18 @@ class _SettingsState extends State<Settings> {
         title: Text("Settings"),
       ),
       body: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
                 "DAY",
-                style: testStyle,
+                style: TextStyle(
+                    fontSize: 28,
+                    letterSpacing: 5,
+                    color: color,
+                    fontWeight: FontWeight.w300),
               ),
               AnimatedButton(
                 width: 200,
@@ -216,16 +221,22 @@ class _SettingsState extends State<Settings> {
                     fontWeight: FontWeight.w300),
                 selectedBackgroundColor: Colors.white,
               ),
-
-
+              SizedBox(
+                height: MediaQuery.of(context).size.height*0.05,
+              )
             ],
           ),
 
           Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(
                   "START TIME",
-                style: testStyle,
+                style: TextStyle(
+                    fontSize: 28,
+                    letterSpacing: 5,
+                    color: color,
+                    fontWeight: FontWeight.w300),
               ),
               AnimatedButton(
                 width: 200,
@@ -277,6 +288,335 @@ class _SettingsState extends State<Settings> {
                     fontWeight: FontWeight.w300),
                 selectedBackgroundColor: Colors.white,
               ),
+
+
+              AnimatedButton(
+                width: 200,
+                text: wedStartTime.toString().substring(10, 15),
+                isReverse: true,
+                selectedTextColor: color,
+                backgroundColor: Colors.black,
+                transitionType: TransitionType.TOP_CENTER_ROUNDER,
+                onPress: () => () async{
+                  final TimeOfDay? newStart = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay(hour: wedStartTime.hour, minute: wedStartTime.minute),
+                    initialEntryMode: TimePickerEntryMode.input,
+                  );
+                  setState(() {
+                    wedStartTime = newStart!;
+                  });
+                },
+                textStyle: TextStyle(
+                    fontSize: 28,
+                    letterSpacing: 5,
+                    color: color,
+                    fontWeight: FontWeight.w300),
+                selectedBackgroundColor: Colors.white,
+              ),
+
+
+              AnimatedButton(
+                width: 200,
+                text: thuStartTime.toString().substring(10, 15),
+                isReverse: true,
+                selectedTextColor: color,
+                backgroundColor: Colors.black,
+                transitionType: TransitionType.TOP_CENTER_ROUNDER,
+                onPress: () => () async{
+                  final TimeOfDay? newStart = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay(hour: thuStartTime.hour, minute: thuStartTime.minute),
+                    initialEntryMode: TimePickerEntryMode.input,
+                  );
+                  setState(() {
+                    thuStartTime = newStart!;
+                  });
+                },
+                textStyle: TextStyle(
+                    fontSize: 28,
+                    letterSpacing: 5,
+                    color: color,
+                    fontWeight: FontWeight.w300),
+                selectedBackgroundColor: Colors.white,
+              ),
+
+              AnimatedButton(
+                width: 200,
+                text: friStartTime.toString().substring(10, 15),
+                isReverse: true,
+                selectedTextColor: color,
+                backgroundColor: Colors.black,
+                transitionType: TransitionType.TOP_CENTER_ROUNDER,
+                onPress: () => () async{
+                  final TimeOfDay? newStart = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay(hour: friStartTime.hour, minute: friStartTime.minute),
+                    initialEntryMode: TimePickerEntryMode.input,
+                  );
+                  setState(() {
+                    friStartTime = newStart!;
+                  });
+                },
+                textStyle: TextStyle(
+                    fontSize: 28,
+                    letterSpacing: 5,
+                    color: color,
+                    fontWeight: FontWeight.w300),
+                selectedBackgroundColor: Colors.white,
+              ),
+
+              AnimatedButton(
+                width: 200,
+                text: satStartTime.toString().substring(10, 15),
+                isReverse: true,
+                selectedTextColor: color,
+                backgroundColor: Colors.black,
+                transitionType: TransitionType.TOP_CENTER_ROUNDER,
+                onPress: () => () async{
+                  final TimeOfDay? newStart = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay(hour: satStartTime.hour, minute: satStartTime.minute),
+                    initialEntryMode: TimePickerEntryMode.input,
+                  );
+                  setState(() {
+                    satStartTime = newStart!;
+                  });
+                },
+                textStyle: TextStyle(
+                    fontSize: 28,
+                    letterSpacing: 5,
+                    color: color,
+                    fontWeight: FontWeight.w300),
+                selectedBackgroundColor: Colors.white,
+              ),
+
+              AnimatedButton(
+                width: 200,
+                text: sunStartTime.toString().substring(10, 15),
+                isReverse: true,
+                selectedTextColor: color,
+                backgroundColor: Colors.black,
+                transitionType: TransitionType.TOP_CENTER_ROUNDER,
+                onPress: () => () async{
+                  final TimeOfDay? newStart = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay(hour: sunStartTime.hour, minute: sunStartTime.minute),
+                    initialEntryMode: TimePickerEntryMode.input,
+                  );
+                  setState(() {
+                    sunStartTime = newStart!;
+                  });
+                },
+                textStyle: TextStyle(
+                    fontSize: 28,
+                    letterSpacing: 5,
+                    color: color,
+                    fontWeight: FontWeight.w300),
+                selectedBackgroundColor: Colors.white,
+              ),
+
+              SizedBox(
+                height: MediaQuery.of(context).size.height*0.05,
+              )
+            ],
+          ),
+
+
+
+
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(
+                "END TIME",
+                style: TextStyle(
+                    fontSize: 28,
+                    letterSpacing: 5,
+                    color: color,
+                    fontWeight: FontWeight.w300),
+              ),
+              AnimatedButton(
+                width: 200,
+                text: monEndTime.toString().substring(10, 15),
+                isReverse: true,
+                selectedTextColor: color,
+                backgroundColor: Colors.black,
+                transitionType: TransitionType.TOP_CENTER_ROUNDER,
+                onPress: () => () async{
+                  final TimeOfDay? newEnd = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay(hour: monEndTime.hour, minute: monEndTime.minute),
+                    initialEntryMode: TimePickerEntryMode.input,
+                  );
+                  setState(() {
+                    monEndTime = newEnd!;
+                  });
+                },
+                textStyle: TextStyle(
+                    fontSize: 28,
+                    letterSpacing: 5,
+                    color: color,
+                    fontWeight: FontWeight.w300),
+                selectedBackgroundColor: Colors.white,
+              ),
+
+
+              AnimatedButton(
+                width: 200,
+                text: tueEndTime.toString().substring(10, 15),
+                isReverse: true,
+                selectedTextColor: color,
+                backgroundColor: Colors.black,
+                transitionType: TransitionType.TOP_CENTER_ROUNDER,
+                onPress: () => () async{
+                  final TimeOfDay? newEnd = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay(hour: tueEndTime.hour, minute: tueEndTime.minute),
+                    initialEntryMode: TimePickerEntryMode.input,
+                  );
+                  setState(() {
+                    tueEndTime = newEnd!;
+                  });
+                },
+                textStyle: TextStyle(
+                    fontSize: 28,
+                    letterSpacing: 5,
+                    color: color,
+                    fontWeight: FontWeight.w300),
+                selectedBackgroundColor: Colors.white,
+              ),
+
+
+              AnimatedButton(
+                width: 200,
+                text: wedEndTime.toString().substring(10, 15),
+                isReverse: true,
+                selectedTextColor: color,
+                backgroundColor: Colors.black,
+                transitionType: TransitionType.TOP_CENTER_ROUNDER,
+                onPress: () => () async{
+                  final TimeOfDay? newEnd = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay(hour: wedEndTime.hour, minute: wedEndTime.minute),
+                    initialEntryMode: TimePickerEntryMode.input,
+                  );
+                  setState(() {
+                    wedEndTime = newEnd!;
+                  });
+                },
+                textStyle: TextStyle(
+                    fontSize: 28,
+                    letterSpacing: 5,
+                    color: color,
+                    fontWeight: FontWeight.w300),
+                selectedBackgroundColor: Colors.white,
+              ),
+
+
+              AnimatedButton(
+                width: 200,
+                text: thuEndTime.toString().substring(10, 15),
+                isReverse: true,
+                selectedTextColor: color,
+                backgroundColor: Colors.black,
+                transitionType: TransitionType.TOP_CENTER_ROUNDER,
+                onPress: () => () async{
+                  final TimeOfDay? newEnd = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay(hour: thuEndTime.hour, minute: thuEndTime.minute),
+                    initialEntryMode: TimePickerEntryMode.input,
+                  );
+                  setState(() {
+                    thuEndTime = newEnd!;
+                  });
+                },
+                textStyle: TextStyle(
+                    fontSize: 28,
+                    letterSpacing: 5,
+                    color: color,
+                    fontWeight: FontWeight.w300),
+                selectedBackgroundColor: Colors.white,
+              ),
+
+              AnimatedButton(
+                width: 200,
+                text: friEndTime.toString().substring(10, 15),
+                isReverse: true,
+                selectedTextColor: color,
+                backgroundColor: Colors.black,
+                transitionType: TransitionType.TOP_CENTER_ROUNDER,
+                onPress: () => () async{
+                  final TimeOfDay? newEnd = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay(hour: friEndTime.hour, minute: friEndTime.minute),
+                    initialEntryMode: TimePickerEntryMode.input,
+                  );
+                  setState(() {
+                    friEndTime = newEnd!;
+                  });
+                },
+                textStyle: TextStyle(
+                    fontSize: 28,
+                    letterSpacing: 5,
+                    color: color,
+                    fontWeight: FontWeight.w300),
+                selectedBackgroundColor: Colors.white,
+              ),
+
+              AnimatedButton(
+                width: 200,
+                text: satEndTime.toString().substring(10, 15),
+                isReverse: true,
+                selectedTextColor: color,
+                backgroundColor: Colors.black,
+                transitionType: TransitionType.TOP_CENTER_ROUNDER,
+                onPress: () => () async{
+                  final TimeOfDay? newEnd = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay(hour: satEndTime.hour, minute: satEndTime.minute),
+                    initialEntryMode: TimePickerEntryMode.input,
+                  );
+                  setState(() {
+                    satEndTime = newEnd!;
+                  });
+                },
+                textStyle: TextStyle(
+                    fontSize: 28,
+                    letterSpacing: 5,
+                    color: color,
+                    fontWeight: FontWeight.w300),
+                selectedBackgroundColor: Colors.white,
+              ),
+
+              AnimatedButton(
+                width: 200,
+                text: sunEndTime.toString().substring(10, 15),
+                isReverse: true,
+                selectedTextColor: color,
+                backgroundColor: Colors.black,
+                transitionType: TransitionType.TOP_CENTER_ROUNDER,
+                onPress: () => () async{
+                  final TimeOfDay? newEnd = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay(hour: sunEndTime.hour, minute: sunEndTime.minute),
+                    initialEntryMode: TimePickerEntryMode.input,
+                  );
+                  setState(() {
+                    sunEndTime = newEnd!;
+                  });
+                },
+                textStyle: TextStyle(
+                    fontSize: 28,
+                    letterSpacing: 5,
+                    color: color,
+                    fontWeight: FontWeight.w300),
+                selectedBackgroundColor: Colors.white,
+              ),
+
+              SizedBox(
+                height: MediaQuery.of(context).size.height*0.05,
+              )
 
             ],
           ),

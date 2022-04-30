@@ -1,114 +1,96 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:cron/cron.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'dart:developer' as dev;
-//import 'package:build_runner/build_runner.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 import 'globals.dart' as globals;
 import 'createpack.dart';
 import 'makequestion.dart';
 import 'settings.dart' as settings;
 
-part 'classes.g.dart';
-
-
-bool isNotificationsAllowed(){
-  return true;
-}
-
-void notificationsAllowed(){
-
-}
 
 
 
-/*List<Widget> getPacks() async {
-
-
-
-  final String response = await rootBundle.loadString('assets/sample.json');
-  final data = await json.decode(response);
-
-  dev.log(response);
-  dev.log(data);
-
-  /*if(outPacks.isEmpty){
-    return [
-      Material(
-        elevation: 5,
-        color: Colors.red,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20)
-        ),
-        child: SizedBox(
-          height: 100,
-          child: Stack(
-            children: [
-              Align(
-                alignment: FractionalOffset(0.5, 0.1),
-                child: Text("You have no Packs"),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ];
-  }*/
-
-  return outPacks;
-}*/
-
-
-void deletePack(HivePack pack) async{
-
-}
-
-
-List<HivePack> loadPacks() {
-  return [];
-}
-
-
-void addPack(HivePack pack) async{
-
+void changePage(int index){
+  ///here
 }
 
 
 
 
 
+List<HivePack> pcksFromJson(String _json){
+  ///use the build in convert library to crete map string to dynamic
+  Map map = json.decode(_json);
+
+///itterate through each pack, question and answer building the objects from the map
+  List<HivePack> packs = [];
+  if(map["packs"] == null){
+    map["packs"] = [];
+  }
+  map["packs"].forEach((pcs) {
+    List<HiveQuestion> questions = [];
+    pcs["questions"].forEach((qst) {
+      List<HiveAnswer> answers = [];
+      qst["answers"].forEach((ans) {
+        answers.add(HiveAnswer(text: ans["text"], correct: ans["correct"]));
+      });
+
+      List<int> pastAns =  qst["pastAnswers"].cast<int>();
+
+      HiveQuestion newQuestion = HiveQuestion(
+        question: qst["question"],
+        attempted: qst["attempted"],
+        cardNo: qst["cardNo"],
+        correct: qst["correct"],
+        pastAnswers: pastAns,
+        answers: answers,
+      );
+
+      questions.add(newQuestion);
+    });
+
+    HivePack newPack = HivePack(
+      enabled: pcs["enabled"],
+      frequency: pcs["frequency"],
+      title: pcs["title"],
+      questions: questions,
+    );
+    packs.add(newPack);
+  });
+
+
+  return packs;
+}
 
 
 void sendNotification(int hour, int minute, String question, String ans1, String ans2, String ans3, String correct, String packName) async {
+
+  final prefs = await SharedPreferences.getInstance();
   DateTime tm = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, hour, minute);
   if(tm.isBefore(DateTime.now())){
     scheduleQuestions();
     return;
   }
-  dev.log("is executing");
 
-  if(!isNotificationsAllowed()){
+
+  if(!prefs.getBool("notifications")){
     await globals.requestUserPermission();
   }
 
-  if(!isNotificationsAllowed()){
-    dev.log("was false");
+  if(!prefs.getBool("notifications")){
     return;
   }
 
 
-
-  dev.log("Scheduled: " + tm.toString());
-
-  await AwesomeNotifications().createNotification(
+  AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: 100,
-        channelKey: "awesome_notifications",
+        channelKey: "basic_channel",
         title: question,
         body: "test",
         payload: {"question": question, "correct": correct, "name": packName},
@@ -136,21 +118,192 @@ void sendNotification(int hour, int minute, String question, String ans1, String
       ],
       schedule: NotificationCalendar.fromDate(date: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, hour, minute))
   );
+
 }
+
+String jsonFromPacks(List<HivePack> packs){
+
+  ///if empty return empty json object
+  if(packs.length == 0){
+    return "{}";
+  }
+
+  ///start with empty list packs and then add each pack itteritevley
+  String output = '{"packs" : [';
+  packs.forEach((pack) {
+    output += pack.toJson() + ",";
+  });
+  output = output.substring(0, output.length -1);
+  output += "]}";
+
+  return output;
+}
+
+
+
+
+void deletePack(HivePack pack) async{
+  ///load packs from storeage
+  final prefs = await SharedPreferences.getInstance();
+  String? pcks = prefs.getString("packs");
+  List<HivePack> packs = [];
+  if(!(pcks == null)){
+    packs = pcksFromJson(pcks);
+  }
+
+
+  List<HivePack> outPacks = [];
+
+  ///for every pack if the title does not match the title of the parameter pack then add to new list
+  packs.forEach((element) {
+    if(!(element.title == pack.title)){
+      outPacks.add(element);
+    }
+  });
+
+  String outJson = jsonFromPacks(outPacks);
+
+  ///save new string to storage
+  prefs.setString("packs", outJson);
+
+}
+
+
+List<Widget> loadPacks(){
+
+///load json from storage
+  String? pcks = globals.pref.getString("packs");///using globals so that function no asyncronus
+  if(pcks == null){
+    pcks = "{}";
+  }
+  List<HivePack> packs = [];
+  packs = pcksFromJson(pcks);
+
+
+  ///for every hive pack create a Pack
+  List<Pack> outPacks = [];
+  packs.forEach((pack) {
+    outPacks.add(Pack(name: pack.title, hivePack: pack, enabled: pack.enabled));
+  });
+
+
+  ///if there are no packs return blank tile saying so
+  if(outPacks.length == 0){
+    return [
+      Material(
+        elevation: 5,
+        color: Colors.red,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20)
+        ),
+        child: SizedBox(
+          height: 100,
+          child: Stack(
+            children: [
+              Align(
+                alignment: FractionalOffset(0.5, 0.1),
+                child: Text("You have no Packs"),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ];
+  }
+  return outPacks;
+}
+
+///load the packs from storeage and convert to hive pack
+Future<List<HivePack>> loadHivePacks() async {
+  final prefs = await SharedPreferences.getInstance();
+  String? pcks = prefs.getString("packs");
+  List<HivePack> packs = [];
+  if(!(pcks == null)){
+    packs = pcksFromJson(pcks);
+  }
+
+
+
+  return packs;
+}
+
+
+void addPack(HivePack pack) async{
+  ///load the json from the storage
+  final prefs = await SharedPreferences.getInstance();
+  String? pcks = prefs.getString("packs");
+
+  ///if the string is not null call pcks from json to load packs
+  List<HivePack> packs = [];
+  if(!(pcks == null)){
+    packs = pcksFromJson(pcks);
+  }
+
+  ///if the pack is not allready contained in packs, add it
+  if(!(packs.contains(pack))){
+    packs.add(pack);
+  }else{
+    ///remove the old instance if one exists to replace it with updated one
+    packs.removeWhere((element) => element.title == pack.title);
+    packs.add(pack);
+  }
+
+
+
+  ///convert new list back to json and store
+  String newPacks = jsonFromPacks(packs);
+  prefs.setString("packs", newPacks);
+  print("new packs: " + newPacks);
+}
+
+
 
 
 void scheduleQuestions() async{
 
-
+  TimeOfDay startTime = TimeOfDay(hour: 7, minute: 0);
+  TimeOfDay endTime = TimeOfDay(hour: 22, minute: 0);
+  bool chosenDay = false;
+  if(DateTime.now().weekday == 1){
+    chosenDay = settings.mon;
+    startTime = settings.monStartTime;
+    endTime = settings.monEndTime;
+  }if(DateTime.now().weekday == 2){
+    chosenDay = settings.tue;
+    startTime = settings.tueStartTime;
+    endTime = settings.tueEndTime;
+  }if(DateTime.now().weekday == 3){
+    chosenDay = settings.wed;
+    startTime = settings.wedStartTime;
+    endTime = settings.wedEndTime;
+  }if(DateTime.now().weekday == 4){
+    chosenDay = settings.thur;
+    startTime = settings.thuStartTime;
+    endTime = settings.thuEndTime;
+  }if(DateTime.now().weekday == 5){
+    chosenDay = settings.fri;
+    startTime = settings.friStartTime;
+    endTime = settings.friEndTime;
+  }if(DateTime.now().weekday == 6){
+    chosenDay = settings.sat;
+    startTime = settings.satStartTime;
+    endTime = settings.satEndTime;
+  }if(DateTime.now().weekday == 7){
+    chosenDay = settings.sun;
+    startTime = settings.sunStartTime;
+    endTime = settings.sunEndTime;
+  }
 
   var rng = Random();
 
 
-  List<HivePack> _packList = [];
+  List<HivePack> _packList = await loadHivePacks();
 
 
-  int earliest = settings.startTime.hour*60 + settings.startTime.minute;
-  int latest = settings.endTime.hour*60 + settings.endTime.minute;
+
+
+  int earliest = startTime.hour*60 + startTime.minute;
+  int latest = endTime.hour*60 + endTime.minute;
 
   _packList.forEach((pack) {
     List<HiveQuestion> qstList = [];
@@ -171,15 +324,14 @@ void scheduleQuestions() async{
     for(int x = 0; x < pack.frequency; x++){
       HiveQuestion qst = qstList[0];
       if(qstList.length > 1){
-        qst = qstList.removeAt(rng.nextInt(qstList.length)-1);
+        qst = qstList.removeAt(rng.nextInt(qstList.length-1));
       }else{
         qst = qstList.removeAt(0);
       }
 
+
       int minutes = rng.nextInt(step) + (x * step);
       DateTime scheduleTime = DateTime.now().add(Duration(minutes: minutes + earliest));
-
-
 
 
 
@@ -194,28 +346,10 @@ void scheduleQuestions() async{
       }
 
 
-      bool chosenDay = false;
-      if(DateTime.now().weekday == 1){
-        chosenDay = settings.mon;
-      }if(DateTime.now().weekday == 2){
-        chosenDay = settings.tue;
-      }if(DateTime.now().weekday == 3){
-        chosenDay = settings.wed;
-      }if(DateTime.now().weekday == 4){
-        chosenDay = settings.thur;
-      }if(DateTime.now().weekday == 5){
-        chosenDay = settings.fri;
-      }if(DateTime.now().weekday == 6){
-        chosenDay = settings.sat;
-      }if(DateTime.now().weekday == 7){
-        chosenDay = settings.sun;
-      }
 
 
-      //if(chosenDay){
-      //  sendNotification(scheduleTime.hour, scheduleTime.hour, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
-      //}
-      sendNotification(DateTime.now().hour, DateTime.now().minute + 1, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
+
+      sendNotification(DateTime.now().hour, DateTime.now().minute + 2, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text, corr, pack.title);
     }
   });
 }
@@ -225,7 +359,7 @@ void scheduleQuestions() async{
 
 
 
-
+///class for the backend storage of data
 class HivePack {
   HivePack({required this.title, required this.questions, required this.enabled, required this.frequency}) : super();
 
@@ -237,23 +371,21 @@ class HivePack {
 
   int frequency;
 
-  HivePack.fromJson(Map<String, dynamic> json)
-      : title = json["title"],
-        questions = List<HiveQuestion>.from(json["questions"]((model) => HiveQuestion.fromJson(model))),
-        enabled = json["enabled"],
-        frequency = json["frequency"];
+
+  String toJson(){
+    String qsts = "[";
+    questions.forEach((element) {
+      qsts += element.toJson() + ',';
+    });
+    qsts = qsts.substring(0, qsts.length -1);
 
 
-  Map<String, dynamic> toJson() => {
-    "title": title,
-    "questions" : questions,
-    "enabled" : enabled,
-    "frequency" : frequency,
-  };
+    return '{"title" : ' + '"' + title + '"' + ', "questions" : ' + qsts + ']' + ', "enabled" : ' + enabled.toString() + ', "frequency" :' + frequency.toString() + '}';
+  }
 }
 
 
-
+///class for the backend storage of data
 class HiveQuestion extends HiveObject{
   HiveQuestion(
       {required this.cardNo, required this.question, required this.answers, required this.attempted, required this.correct, required this.pastAnswers})
@@ -265,43 +397,29 @@ class HiveQuestion extends HiveObject{
   int correct;
   List<int> pastAnswers;
 
+  String toJson(){
+    String answs = '[';
+    answers.forEach((element) {
+      answs += element.toJson() + ",";
+    });
+    answs = answs.substring(0, answs.length-1);
+    return '{"cardNo" : ' + cardNo.toString() + ', "question" : ' + '"' + question + '"' + ', "answers" : ' + answs +']' +
+    ', "attempted" : ' + attempted.toString() + ', "correct" : ' + correct.toString() + ', "pastAnswers" : ' + pastAnswers.toString() + '}';
+  }
 
-  HiveQuestion.fromJson(Map<String, dynamic> json)
-  : cardNo = json["cardno"],
-  question = json["question"],
-  answers = List<HiveAnswer>.from(json["answers"]((model) => HiveAnswer.fromJson(model))),
-  attempted = json["attempted"],
-  correct = json["correct"],
-  pastAnswers = json["pastanswers"];
-
-
-
-  Map<String, dynamic> toJson() => {
-    "cardno" : cardNo,
-    "question" : question,
-    "answers" : answers,
-    "attempted" : attempted,
-    "correct" : correct,
-    "pastAnswers" : pastAnswers,
-  };
 }
 
 
 
-
+///class for the backend storage of data
 class HiveAnswer extends HiveObject{
   HiveAnswer({required this.text, required this.correct}) : super();
   String text;
   bool correct;
 
-  HiveAnswer.fromJson(Map<String, dynamic> json)
-    : text = json["text"],
-    correct = json["correct"];
-
-  Map<String, dynamic> toJson() => {
-    "text" : text,
-    "correct" : correct,
-  };
+  String toJson(){
+    return '{"text" : ' + '"' + text + '"' + ', "correct" : ' + correct.toString() + "}";
+  }
 }
 
 
@@ -322,6 +440,8 @@ class Question extends StatefulWidget{
   _QuestionState createState() => _QuestionState();
 }
 
+
+///calculates the color to set the question to
 class _QuestionState extends State<Question>{
   Color confidence(){
     
@@ -332,19 +452,15 @@ class _QuestionState extends State<Question>{
       max += (widget.pastAnswers.length-i)*2;
     }
 
-    dev.log(total.toString());
-
     widget.progress = total/max;
-    
     int colorValue = (total/max * 255).toInt();
-
-    dev.log(colorValue.toString());
-    dev.log("color value");
     Color color = Color.fromARGB(255, 255-colorValue, colorValue, 0);
 
     return color;
   }
 
+
+  ///updates the value displayed on the front of the pack
   void updateProgress(){
     int correct = 0;
     widget.pastAnswers.forEach((element) {
@@ -353,11 +469,6 @@ class _QuestionState extends State<Question>{
     widget.progress = correct/6;
   }
 
-  void deleteSelf(){
-    setState(() {
-      globals.questions.removeWhere((question) => question.question == widget.question);
-    });
-  }
 
 
 
@@ -459,6 +570,8 @@ class Pack extends StatefulWidget{
 
 class _PackState extends State<Pack>{
 
+
+  ///change the color depending on the enabled status
   MaterialColor isEnabled(){
     if(widget.enabled){
       return Colors.red;
@@ -467,6 +580,8 @@ class _PackState extends State<Pack>{
     }
   }
 
+
+  ///get the number of questions attempted
   List questionsAttempted(){
     int qst = 0;
     int correct = 0;
@@ -484,18 +599,20 @@ class _PackState extends State<Pack>{
 
   @override
   Widget build(BuildContext context){
+
     return GestureDetector(
+      ///on long press toggle the packs enabled state
       onLongPress: (){
         setState(() {
           widget.enabled = !(widget.enabled);
           widget.hivePack.enabled = !(widget.hivePack.enabled);
         });
       },
+      ///on doubble tap open create pack with the current pack loaded in to edit
       onDoubleTap: () async{
         Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: widget)));
-
-        dev.log("here 3");
       },
+      ///visual component of packs that gets displayed
       child: Material(
         elevation: 5,
         color: isEnabled(),
@@ -538,6 +655,8 @@ class _PackState extends State<Pack>{
 }
 
 
+
+///update past answers for correct answer
 List<int> correct(List<int> past){
   for( var i = 1; i >= 5; i ++){
     past[i-1] = past[i];
@@ -547,6 +666,8 @@ List<int> correct(List<int> past){
   return past;
 }
 
+
+///update past answers for incorrect value
 List<int> incorrect(List<int> past){
   for( var i = 1; i >= 5; i ++){
     past[i-1] = past[i];

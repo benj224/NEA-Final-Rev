@@ -1,11 +1,9 @@
-import 'dart:collection';
 import 'dart:developer';
 
-import 'package:awesome_notifications/awesome_notifications.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 import 'classes.dart';
 import 'globals.dart' as globals;
@@ -18,7 +16,7 @@ TextEditingController titleController = TextEditingController();
 
 class CreatePack extends StatefulWidget{
   CreatePack({required this.pack}) :super();
-  final Pack pack;
+  Pack? pack;
   @override
   _CreatePackState createState() => _CreatePackState();
 }
@@ -31,8 +29,12 @@ class _CreatePackState extends State<CreatePack> {
   void initState() {
     super.initState();
 
+    if(widget.pack == null){
+      widget.pack = Pack(enabled: true, name: "Title", hivePack: HivePack(enabled: true, frequency: 4, questions: [], title: "Title"),);
+    }
+
     ///if the page opened from an existing pack load the questions into the list view
-    widget.pack.hivePack.questions.forEach((element) {
+    widget.pack!.hivePack.questions.forEach((element) {
       log(element.question);
       if(!globals.questions.contains(element)){
         globals.questions.add(element);
@@ -42,10 +44,10 @@ class _CreatePackState extends State<CreatePack> {
 
     ///if a question has just been crated load the question into the packs questions
     if(!(globals.newQuestion == null)){
-      if(!widget.pack.hivePack.questions.contains(globals.newQuestion!.hiveQuestion)){
+      if(!widget.pack!.hivePack.questions.contains(globals.newQuestion!.hiveQuestion)){
         log("pack qustions didnt contain");
-        widget.pack.questions.add(globals.newQuestion!);
-        widget.pack.hivePack.questions.add(globals.newQuestion!.hiveQuestion);
+        widget.pack!.questions.add(globals.newQuestion!);
+        widget.pack!.hivePack.questions.add(globals.newQuestion!.hiveQuestion);
 
       }
       if(!globals.questions.contains(globals.newQuestion!.hiveQuestion)){
@@ -56,7 +58,7 @@ class _CreatePackState extends State<CreatePack> {
 
 
     ///when editing existing pack set the title controller to the pack title
-    titleController.text = widget.pack.name;
+    titleController.text = widget.pack!.name;
   }
 
 
@@ -96,7 +98,7 @@ class _CreatePackState extends State<CreatePack> {
               value: 6,
               step: 1,
               onChanged: (value) {
-                widget.pack.hivePack.frequency = value.toInt();
+                widget.pack!.hivePack.frequency = value.toInt();
               }
             ),
             ///List of questions
@@ -112,8 +114,8 @@ class _CreatePackState extends State<CreatePack> {
                     child: Icon(Icons.add),
                     onPressed: () {
                       setState(() {
-                        widget.pack.name = titleController.text;
-                        widget.pack.hivePack.title = titleController.text;
+                        widget.pack!.name = titleController.text;
+                        widget.pack!.hivePack.title = titleController.text;
                         globals.newPack = widget.pack;
                         Navigator.push(
                             context, MaterialPageRoute(builder: (context) =>
@@ -148,7 +150,7 @@ class _CreatePackState extends State<CreatePack> {
                   child: FloatingActionButton(
                     child: Icon(Icons.done_rounded),
                     onPressed: () async {
-                      if(widget.pack.hivePack.questions.isEmpty || titleController.text == ""){
+                      if(widget.pack!.hivePack.questions.isEmpty || titleController.text == ""){
                         showDialog(
                             context: context,
                             builder: (_) =>
@@ -175,10 +177,11 @@ class _CreatePackState extends State<CreatePack> {
                         );
                       }else{
 
-                        widget.pack.name = titleController.text;
-                        widget.pack.hivePack.title = titleController.text;
+                        widget.pack!.name = titleController.text;
+                        widget.pack!.hivePack.title = titleController.text;
 
-                        addPack(widget.pack.hivePack);
+                        deletePack(widget.pack!.hivePack);
+                        addPack(widget.pack!.hivePack);
 
                         globals.questions = [];
 
@@ -198,7 +201,7 @@ class _CreatePackState extends State<CreatePack> {
                         child: Icon(Icons.delete_rounded),
                         onPressed: () async {
 
-                          deletePack(widget.pack.hivePack);
+                          deletePack(widget.pack!.hivePack);
                           globals.questions = [];
 
                           Navigator.push(context,
