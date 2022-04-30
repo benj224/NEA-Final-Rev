@@ -44,6 +44,8 @@ dependencies:
   localstorage: ^4.0.0+1
   sqflite: ^2.0.2
   path: ^1.8.0
+  flutter_animated_button: ^2.0.0
+  flutter_colorpicker: ^1.0.3
 
 
 dev_dependencies:
