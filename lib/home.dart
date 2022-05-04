@@ -261,9 +261,7 @@ class _MyHomePageState extends State<MyHomePage> {
           onDestinationSelected: (index) {
             setState(() {
               tabselected = index;
-
-
-
+              changePage(index, context);
             });
           },
           destinations: [

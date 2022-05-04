@@ -6,7 +6,9 @@ import 'package:nea/classes.dart';
 import 'package:flutter_animated_button/flutter_animated_button.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
+import 'createpack.dart';
 import 'home.dart';
+import 'globals.dart' as globals;
 
 
 
@@ -54,6 +56,9 @@ class Settings extends StatefulWidget{
 }
 
 class _SettingsState extends State<Settings> {
+
+
+
 
   @override
   Widget build(context){
@@ -625,6 +630,7 @@ class _SettingsState extends State<Settings> {
           Align(
             alignment: Alignment.topRight,
             child: MaterialPicker(
+              portraitOnly: true,
               pickerColor: color, //default color
               onColorChanged: (Color newColor){ //on color picked
                 setState(() {
@@ -638,21 +644,50 @@ class _SettingsState extends State<Settings> {
         ],
       ),
 
-      ///button to return home
-      floatingActionButton: Stack(
-        children: [
-          Align(
-            alignment: FractionalOffset(0.1, 0.95),
-            child: FloatingActionButton(
-              backgroundColor: Colors.black,
-              foregroundColor: color,
-              child: Icon(Icons.home_rounded),
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
-              }
+
+      bottomNavigationBar: NavigationBarTheme(
+        data: NavigationBarThemeData(
+          indicatorColor: Colors.grey.shade600,
+          backgroundColor: Colors.black,
+          labelTextStyle: MaterialStateProperty.all(
+            TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: color),
+          ),
+        ),
+        child: NavigationBar(
+          height: 65,
+          selectedIndex: globals.tabselected,
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+          animationDuration: Duration(seconds: 2),
+          onDestinationSelected: (index) {
+            setState(() {
+              globals.tabselected = index;
+              changePage(index, context);
+            });
+          },
+          destinations: [
+            NavigationDestination(
+              icon: Icon(Icons.home,
+                color: color,),
+              label: 'Home',
+              selectedIcon: Icon(Icons.home_outlined,
+                color: color,),
             ),
-          )
-        ],
+            NavigationDestination(
+              icon: Icon(Icons.settings,
+                color: color,),
+              label: 'Settings',
+              selectedIcon: Icon(Icons.settings_outlined,
+                color: color,),
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.add,
+                color: color,),
+              label: 'Add',
+              selectedIcon: Icon(Icons.add_outlined,
+                color: color,),
+            ),
+          ],
+        ),
       ),
     );
   }

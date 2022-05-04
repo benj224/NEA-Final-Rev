@@ -4,19 +4,29 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:nea/settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
 import 'globals.dart' as globals;
 import 'createpack.dart';
+import 'home.dart';
 import 'makequestion.dart';
 import 'settings.dart' as settings;
 
 
 
 
-void changePage(int index){
-  ///here
+void changePage(int index, BuildContext context){
+  if(index == 2){
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => CreatePack(pack: Pack(enabled: true, name: "", hivePack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2),))));
+  }if(index == 1){
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => Settings()));
+  }if(index == 0){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+  }
 }
 
 
