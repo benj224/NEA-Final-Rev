@@ -11,6 +11,9 @@ import 'home.dart';
 import 'globals.dart' as globals;
 
 
+///add slide in animations for color picker
+
+
 
 ///initialize all variables
 bool mon = true;
@@ -39,6 +42,7 @@ TimeOfDay sunEndTime = TimeOfDay(hour: 22, minute: 0);
 
 // create some values
 Color color = Colors.red;
+Color bgColor = Color(0xFF4F4F4B);
 
 TextStyle testStyle = TextStyle(
     fontSize: 28,
@@ -64,7 +68,7 @@ class _SettingsState extends State<Settings> {
   Widget build(context){
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: bgColor,
         titleTextStyle: TextStyle(
             fontSize: 28,
             letterSpacing: 5,
@@ -88,11 +92,12 @@ class _SettingsState extends State<Settings> {
                     fontWeight: FontWeight.w300),
               ),
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: 'MON',
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.LEFT_TO_RIGHT,
                 onPress: () => (){
                   setState(() {
@@ -108,11 +113,12 @@ class _SettingsState extends State<Settings> {
               ),
 
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: 'TUE',
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.LEFT_TO_RIGHT,
                 onPress: () => (){
                   setState(() {
@@ -128,11 +134,12 @@ class _SettingsState extends State<Settings> {
               ),
 
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: 'WED',
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.LEFT_TO_RIGHT,
                 onPress: () => (){
                   setState(() {
@@ -148,11 +155,12 @@ class _SettingsState extends State<Settings> {
               ),
 
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: 'THU',
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.LEFT_TO_RIGHT,
                 onPress: () => (){
                   setState(() {
@@ -168,11 +176,12 @@ class _SettingsState extends State<Settings> {
               ),
 
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: 'FRI',
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.LEFT_TO_RIGHT,
                 onPress: () => (){
                   setState(() {
@@ -188,11 +197,12 @@ class _SettingsState extends State<Settings> {
               ),
 
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: 'SAT',
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.LEFT_TO_RIGHT,
                 onPress: () => (){
                   setState(() {
@@ -208,11 +218,12 @@ class _SettingsState extends State<Settings> {
               ),
 
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: 'SUN',
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.LEFT_TO_RIGHT,
                 onPress: () => (){
                   setState(() {
@@ -244,11 +255,12 @@ class _SettingsState extends State<Settings> {
                     fontWeight: FontWeight.w300),
               ),
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: monStartTime.toString().substring(10, 15),
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.TOP_CENTER_ROUNDER,
                 onPress: () => () async{
                   final TimeOfDay? newStart = await showTimePicker(
@@ -270,11 +282,12 @@ class _SettingsState extends State<Settings> {
 
 
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: tueStartTime.toString().substring(10, 15),
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.TOP_CENTER_ROUNDER,
                 onPress: () => () async{
                   final TimeOfDay? newStart = await showTimePicker(
@@ -296,11 +309,12 @@ class _SettingsState extends State<Settings> {
 
 
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: wedStartTime.toString().substring(10, 15),
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.TOP_CENTER_ROUNDER,
                 onPress: () => () async{
                   final TimeOfDay? newStart = await showTimePicker(
@@ -322,11 +336,12 @@ class _SettingsState extends State<Settings> {
 
 
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: thuStartTime.toString().substring(10, 15),
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.TOP_CENTER_ROUNDER,
                 onPress: () => () async{
                   final TimeOfDay? newStart = await showTimePicker(
@@ -347,11 +362,12 @@ class _SettingsState extends State<Settings> {
               ),
 
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: friStartTime.toString().substring(10, 15),
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.TOP_CENTER_ROUNDER,
                 onPress: () => () async{
                   final TimeOfDay? newStart = await showTimePicker(
@@ -372,11 +388,12 @@ class _SettingsState extends State<Settings> {
               ),
 
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: satStartTime.toString().substring(10, 15),
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.TOP_CENTER_ROUNDER,
                 onPress: () => () async{
                   final TimeOfDay? newStart = await showTimePicker(
@@ -397,11 +414,12 @@ class _SettingsState extends State<Settings> {
               ),
 
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: sunStartTime.toString().substring(10, 15),
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.TOP_CENTER_ROUNDER,
                 onPress: () => () async{
                   final TimeOfDay? newStart = await showTimePicker(
@@ -442,11 +460,12 @@ class _SettingsState extends State<Settings> {
                     fontWeight: FontWeight.w300),
               ),
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: monEndTime.toString().substring(10, 15),
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.TOP_CENTER_ROUNDER,
                 onPress: () => () async{
                   final TimeOfDay? newEnd = await showTimePicker(
@@ -468,11 +487,12 @@ class _SettingsState extends State<Settings> {
 
 
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: tueEndTime.toString().substring(10, 15),
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.TOP_CENTER_ROUNDER,
                 onPress: () => () async{
                   final TimeOfDay? newEnd = await showTimePicker(
@@ -494,11 +514,12 @@ class _SettingsState extends State<Settings> {
 
 
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: wedEndTime.toString().substring(10, 15),
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.TOP_CENTER_ROUNDER,
                 onPress: () => () async{
                   final TimeOfDay? newEnd = await showTimePicker(
@@ -520,11 +541,12 @@ class _SettingsState extends State<Settings> {
 
 
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: thuEndTime.toString().substring(10, 15),
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.TOP_CENTER_ROUNDER,
                 onPress: () => () async{
                   final TimeOfDay? newEnd = await showTimePicker(
@@ -545,11 +567,12 @@ class _SettingsState extends State<Settings> {
               ),
 
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: friEndTime.toString().substring(10, 15),
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.TOP_CENTER_ROUNDER,
                 onPress: () => () async{
                   final TimeOfDay? newEnd = await showTimePicker(
@@ -570,11 +593,12 @@ class _SettingsState extends State<Settings> {
               ),
 
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: satEndTime.toString().substring(10, 15),
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.TOP_CENTER_ROUNDER,
                 onPress: () => () async{
                   final TimeOfDay? newEnd = await showTimePicker(
@@ -595,11 +619,12 @@ class _SettingsState extends State<Settings> {
               ),
 
               AnimatedButton(
+                borderRadius: 12,
                 width: 200,
                 text: sunEndTime.toString().substring(10, 15),
                 isReverse: true,
                 selectedTextColor: color,
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 transitionType: TransitionType.TOP_CENTER_ROUNDER,
                 onPress: () => () async{
                   final TimeOfDay? newEnd = await showTimePicker(
@@ -648,7 +673,7 @@ class _SettingsState extends State<Settings> {
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
           indicatorColor: Colors.grey.shade600,
-          backgroundColor: Colors.black,
+          backgroundColor: bgColor,
           labelTextStyle: MaterialStateProperty.all(
             TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: color),
           ),

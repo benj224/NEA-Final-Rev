@@ -164,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.black,
+          backgroundColor: bgColor,
           automaticallyImplyLeading: false,
           title: Text("Home"),
           titleTextStyle: TextStyle(
@@ -213,13 +213,13 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ),
 
-      floatingActionButton: Stack(
+      /*floatingActionButton: Stack(
         children: [
           Align(
             ///button to add a new pack
               alignment: FractionalOffset(0.9, 0.95),
               child: FloatingActionButton(
-                backgroundColor: Colors.black,
+                backgroundColor: bgColor,
                 foregroundColor: settings.color,
                 child: Icon(Icons.add),
                 onPressed: () {
@@ -233,7 +233,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ///button to go to settings
             alignment: FractionalOffset(0.1, 0.95),
             child: FloatingActionButton(
-              backgroundColor: Colors.black,
+              backgroundColor: bgColor,
               foregroundColor: settings.color,
               child: Icon(Icons.settings),
               onPressed: (){
@@ -243,12 +243,12 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
         ],
-      ),
+      ),*/
 
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
           indicatorColor: Colors.grey.shade600,
-          backgroundColor: Colors.black,
+          backgroundColor: bgColor,
           labelTextStyle: MaterialStateProperty.all(
             TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: settings.color),
           ),
@@ -289,7 +289,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-
     );
 
   }

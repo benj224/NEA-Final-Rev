@@ -19,12 +19,15 @@ import 'settings.dart' as settings;
 
 void changePage(int index, BuildContext context){
   if(index == 2){
+    globals.tabselected = 2;
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => CreatePack(pack: Pack(enabled: true, name: "", hivePack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2),))));
   }if(index == 1){
+    globals.tabselected = 1;
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => Settings()));
   }if(index == 0){
+    globals.tabselected = 0;
     Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
   }
 }
@@ -200,24 +203,27 @@ List<Widget> loadPacks(){
   ///if there are no packs return blank tile saying so
   if(outPacks.length == 0){
     return [
-      Material(
-        elevation: 5,
-        color: Colors.red,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20)
-        ),
-        child: SizedBox(
-          height: 100,
-          child: Stack(
-            children: [
-              Align(
-                alignment: FractionalOffset(0.5, 0.1),
-                child: Text("You have no Packs"),
-              ),
-            ],
+      Padding(
+        padding: EdgeInsets.all(8),
+        child: Material(
+          elevation: 5,
+          color: Colors.red,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12)
+          ),
+          child: SizedBox(
+            height: 100,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: FractionalOffset(0.5, 0.1),
+                  child: Text("You have no Packs"),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
+      )
     ];
   }
   return outPacks;
@@ -610,53 +616,56 @@ class _PackState extends State<Pack>{
   @override
   Widget build(BuildContext context){
 
-    return GestureDetector(
-      ///on long press toggle the packs enabled state
-      onLongPress: (){
-        setState(() {
-          widget.enabled = !(widget.enabled);
-          widget.hivePack.enabled = !(widget.hivePack.enabled);
-        });
-      },
-      ///on doubble tap open create pack with the current pack loaded in to edit
-      onDoubleTap: () async{
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: widget)));
-      },
-      ///visual component of packs that gets displayed
-      child: Material(
-        elevation: 5,
-        color: isEnabled(),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20)
-        ),
-        child: SizedBox(
-          height: 100,
-          child: Stack(
-            children: [
-              Align(
-                alignment: FractionalOffset(0.5, 0.1),
-                child: Text(widget.name),
-              ),
-              Align(
-                alignment: FractionalOffset(0.5, 0.65),
-                child: CircularProgressIndicator(
-                  strokeWidth: 6.0,
-                  value: questionsAttempted()[2]/*widget.progress*/,
+    return Padding(
+      padding: EdgeInsets.all(8),
+      child: GestureDetector(
+        ///on long press toggle the packs enabled state
+        onLongPress: (){
+          setState(() {
+            widget.enabled = !(widget.enabled);
+            widget.hivePack.enabled = !(widget.hivePack.enabled);
+          });
+        },
+        ///on doubble tap open create pack with the current pack loaded in to edit
+        onDoubleTap: () async{
+          Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: widget)));
+        },
+        ///visual component of packs that gets displayed
+        child: Material(
+          elevation: 5,
+          color: isEnabled(),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12)
+          ),
+          child: SizedBox(
+            height: 100,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: FractionalOffset(0.5, 0.1),
+                  child: Text(widget.name),
                 ),
-              ),
-              Align(
-                alignment: FractionalOffset(0.17, 0.25),
-                child: Text("Questions: " + widget.hivePack.questions.length.toString()),
-              ),
-              Align(
-                alignment: FractionalOffset(0.17, 0.55),
-                child: Text("Attempted: " + questionsAttempted()[0].toString()),
-              ),
-              Align(
-                alignment: FractionalOffset(0.17, 0.85),
-                child: Text("Correct: " + questionsAttempted()[1].toString()),
-              ),
-            ],
+                Align(
+                  alignment: FractionalOffset(0.5, 0.65),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 6.0,
+                    value: questionsAttempted()[2]/*widget.progress*/,
+                  ),
+                ),
+                Align(
+                  alignment: FractionalOffset(0.17, 0.25),
+                  child: Text("Questions: " + widget.hivePack.questions.length.toString()),
+                ),
+                Align(
+                  alignment: FractionalOffset(0.17, 0.55),
+                  child: Text("Attempted: " + questionsAttempted()[0].toString()),
+                ),
+                Align(
+                  alignment: FractionalOffset(0.17, 0.85),
+                  child: Text("Correct: " + questionsAttempted()[1].toString()),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -4,11 +4,16 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
+import 'package:nea/settings.dart' as settings;
 
 import 'classes.dart';
 import 'globals.dart' as globals;
+import 'globals.dart';
 import 'home.dart';
 import 'makequestion.dart';
+
+
+///implement bottom bar
 
 
 
@@ -212,8 +217,52 @@ class _CreatePackState extends State<CreatePack> {
               ],
             )
           ],
-        )
-        // add items to the to-do list
+        ),
+
+      bottomNavigationBar: NavigationBarTheme(
+        data: NavigationBarThemeData(
+          indicatorColor: Colors.grey.shade600,
+          backgroundColor: settings.bgColor,
+          labelTextStyle: MaterialStateProperty.all(
+            TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: settings.color),
+          ),
+        ),
+        child: NavigationBar(
+          height: 65,
+          selectedIndex: tabselected,
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+          animationDuration: Duration(seconds: 2),
+          onDestinationSelected: (index) {
+            setState(() {
+              tabselected = index;
+              changePage(index, context);
+            });
+          },
+          destinations: [
+            NavigationDestination(
+              icon: Icon(Icons.home,
+                color: settings.color,),
+              label: 'Home',
+              selectedIcon: Icon(Icons.home_outlined,
+                color: settings.color,),
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.settings,
+                color: settings.color,),
+              label: 'Settings',
+              selectedIcon: Icon(Icons.settings_outlined,
+                color: settings.color,),
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.add,
+                color: settings.color,),
+              label: 'Add',
+              selectedIcon: Icon(Icons.add_outlined,
+                color: settings.color,),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
