@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:nea/settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart';
 
 
 import 'globals.dart' as globals;
@@ -13,6 +14,15 @@ import 'createpack.dart';
 import 'home.dart';
 import 'makequestion.dart';
 import 'settings.dart' as settings;
+
+
+/*Future<List<HivePack>> packsFromServer(){
+
+
+  String url = "someipv6/packs";
+  ///here
+
+}*/
 
 
 

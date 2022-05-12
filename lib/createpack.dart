@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:nea/settings.dart' as settings;
+import 'package:nea/settings.dart';
 
 import 'classes.dart';
 import 'globals.dart' as globals;
@@ -77,24 +78,48 @@ class _CreatePackState extends State<CreatePack> {
     return outList;
   }
 
-
-  @override
-  Widget build(context) {
-    return Scaffold(
-      ///top app bar with title box in
-        appBar: AppBar(title: TextField(
+  AppBar isNew(){
+    if(widget.pack!.name != ""){
+      return AppBar(
+        backgroundColor: bgColor,
+        automaticallyImplyLeading: false,
+        title: Text(widget.pack!.name),
+        titleTextStyle: TextStyle(
+            fontSize: 28,
+            letterSpacing: 5,
+            color: color,
+            fontWeight: FontWeight.w300),
+      );
+    }else{
+      return AppBar(
+        backgroundColor: bgColor,
+        automaticallyImplyLeading: false,
+        title: TextField(
           style: TextStyle(color: Colors.white, fontSize: 18),
           controller: titleController,
           decoration: InputDecoration(
-            fillColor: Colors.white,
+              fillColor: Colors.white,
               contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
               hintText: "Title",
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(32))
           ),
         ),
-          automaticallyImplyLeading: false,
-        ),
+        titleTextStyle: TextStyle(
+            fontSize: 28,
+            letterSpacing: 5,
+            color: color,
+            fontWeight: FontWeight.w300),
+      );
+    }
+  }
+
+
+  @override
+  Widget build(context) {
+    return Scaffold(
+      ///top app bar with title box in
+        appBar: isNew(),
         body: Stack(
           children: [
             SpinBox(
@@ -219,6 +244,8 @@ class _CreatePackState extends State<CreatePack> {
           ],
         ),
 
+
+      ///make into stack with buttons for pack actions
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
           indicatorColor: Colors.grey.shade600,
