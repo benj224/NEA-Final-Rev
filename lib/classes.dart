@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as dev;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -6,7 +7,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:nea/settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 
 
 import 'globals.dart' as globals;
@@ -16,13 +17,65 @@ import 'makequestion.dart';
 import 'settings.dart' as settings;
 
 
-/*Future<List<HivePack>> packsFromServer(){
+//Future<List<HivePack>> packsFromServer(HivePack packs) async{
+Future<List<Category>> getCategories() async{
+  //var url = Uri.parse("http://[2a00:23c8:4f1e:bd01:dc3e:41d4:2ea7:e3c0]/categories");
+  var url = Uri.parse("http://192.168.1.194/categories");
+  var response = await http.get(
+    url,
+    headers: {"Content-Type": "application/json"},
+  );
+
+  String jsonStr = '{"categories":' + response.body + "}";
+  Map map = json.decode(jsonStr);
+  List<dynamic> cats = map["categories"];
+  List<Category> categories = [];
+  cats.forEach((element) {
+    categories.add(Category(name: element));
+  });
+  return categories;
+}
 
 
-  String url = "someipv6/packs";
-  ///here
+Future<List<Pack>> packsFromServer(String? category) async{
+  //var url = Uri.parse("http://[2a00:23c8:4f1e:bd01:dc3e:41d4:2ea7:e3c0]/packs");
+  var url = Uri.parse("http://192.168.1.194/packs");
+  if(category == null){
+    url = Uri.parse("http://192.168.1.194/packs");
+  }else{
+    ///finish this
+  }
 
-}*/
+  //var body = packs.toJson();
+  /*var response = await http.post(
+    url,
+    headers: {"Content-Type": "application/json"},
+    body: body
+  );*/
+
+  var response = await http.get(
+    url,
+    headers: {"Content-Type": "application/json"},
+  );
+
+  String packsStr = '{"packs":' + response.body + "}";
+
+  print(response.statusCode);
+  print(response.headers);
+  print(response.body);
+  dev.log(packsStr);
+
+  List<HivePack> pcks = pcksFromJson(packsStr);
+
+  List<Pack> outPacks = [];
+  pcks.forEach((element) {
+    outPacks.add(Pack(name: element.title, hivePack: element, enabled: element.enabled));
+  });
+  return outPacks;
+}
+
+
+
 
 
 
@@ -673,6 +726,57 @@ class _PackState extends State<Pack>{
                 Align(
                   alignment: FractionalOffset(0.17, 0.85),
                   child: Text("Correct: " + questionsAttempted()[1].toString()),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class Category extends StatefulWidget{
+  Category({required this.name}) : super();
+  final String name;
+
+  @override
+  _CategoryState createState() => _CategoryState();
+}
+
+class _CategoryState extends State<Category> {
+
+
+  @override
+  Widget build(BuildContext context){
+    return Padding(
+      padding: EdgeInsets.all(8),
+      child: GestureDetector(
+        ///on long press toggle the packs enabled state
+        onLongPress: (){
+          setState(() {
+
+          });
+        },
+        ///on doubble tap open create pack with the current pack loaded in to edit
+        onDoubleTap: (){
+
+        },
+        ///visual component of packs that gets displayed
+        child: Material(
+          elevation: 5,
+          color: settings.bgColor,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12)
+          ),
+          child: SizedBox(
+            height: 100,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: FractionalOffset(0.5, 0.1),
+                  child: Text(widget.name),
                 ),
               ],
             ),

@@ -196,8 +196,12 @@ void callbackDispatcher() {
 
 void main() async {
 
+
+  getCategories();
+
+
   ///Initialize the awesome notifications service and create a channel for us to create notifications on
-  /*bool done = await AwesomeNotifications().initialize(
+  bool done = await AwesomeNotifications().initialize(
       null,
       [
         NotificationChannel(
@@ -208,7 +212,7 @@ void main() async {
             ledColor: Colors.white)
       ],
       debug: true
-  );*/
+  );
 
 
 

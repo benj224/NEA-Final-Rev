@@ -18,16 +18,15 @@ import 'settings.dart' as settings;
 ///only save all packs to hive on done pack button.
 ///simplify buttons to use delete self method
 
-class ServerPage extends StatefulWidget{
+class ServerPackPage extends StatefulWidget{
+  ServerPackPage({required this.category}):super();
+  String category;
   @override
-  _ServerPageState createState() => _ServerPageState();
-
-
-
+  _ServerPackPageState createState() => _ServerPackPageState();
 
 }
 
-class _ServerPageState extends State<ServerPage> {
+class _ServerPackPageState extends State<ServerPackPage> {
 
 
 

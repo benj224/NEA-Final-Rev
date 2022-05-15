@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
+import 'package:nea/server.dart';
 import 'package:nea/settings.dart' as settings;
 import 'package:nea/settings.dart';
 
@@ -35,6 +36,10 @@ class _CreatePackState extends State<CreatePack> {
   void initState() {
     super.initState();
 
+
+
+
+
     if(widget.pack == null){
       widget.pack = Pack(enabled: true, name: "Title", hivePack: HivePack(enabled: true, frequency: 4, questions: [], title: "Title"),);
     }
@@ -65,7 +70,41 @@ class _CreatePackState extends State<CreatePack> {
 
     ///when editing existing pack set the title controller to the pack title
     titleController.text = widget.pack!.name;
+
+    Future.delayed(Duration.zero, (){
+      showDialog(
+          context: context,
+          builder: (_) => NetworkGiffyDialog(
+            buttonOkText: Text('Make', style: TextStyle(color: Colors.white)),
+            buttonCancelText: Text('Search', style: TextStyle(color: Colors.white)),
+            buttonCancelColor: Colors.grey,
+            buttonOkColor: Colors.deepPurple,
+            buttonRadius: 0.0,
+            image: Image.asset("assets/images/animated-bell.gif", fit: BoxFit.cover),
+            title: Text('Would you like to make a pack or search the web?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 22.0,
+                    fontWeight: FontWeight.w600)
+            ),
+            //description: Text('Allow Awesome Notifications to send to you beautiful notifications!',
+            //  textAlign: TextAlign.center,
+            //),
+            entryAnimation: EntryAnimation.DEFAULT,
+            onOkButtonPressed: () async {
+              Navigator.of(context).pop();
+            },
+            onCancelButtonPressed: () async {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => ServerPage()));
+            },
+          )
+      );
+    });
+
+
   }
+
+
 
 
   ///Load packs from the database form of HivePack to a widget form of Pack
@@ -76,6 +115,7 @@ class _CreatePackState extends State<CreatePack> {
       log(element.question);
     });
     return outList;
+
   }
 
   AppBar isNew(){
@@ -112,6 +152,7 @@ class _CreatePackState extends State<CreatePack> {
             fontWeight: FontWeight.w300),
       );
     }
+
   }
 
 
@@ -245,8 +286,104 @@ class _CreatePackState extends State<CreatePack> {
         ),
 
 
+      bottomNavigationBar: Stack(
+        children: [
+          NavigationBarTheme(
+            data: NavigationBarThemeData(
+              indicatorColor: Colors.grey.shade600,
+              backgroundColor: settings.bgColor,
+              labelTextStyle: MaterialStateProperty.all(
+                TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: settings.color),
+              ),
+            ),
+            child: NavigationBar(
+              height: 65,
+              selectedIndex: tabselected,
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+              animationDuration: Duration(seconds: 2),
+              onDestinationSelected: (index) {
+                setState(() {
+                  tabselected = index;
+                  changePage(index, context);
+                });
+              },
+              destinations: [
+                NavigationDestination(
+                  icon: Icon(Icons.home,
+                    color: settings.color,),
+                  label: 'Home',
+                  selectedIcon: Icon(Icons.home_outlined,
+                    color: settings.color,),
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.settings,
+                    color: settings.color,),
+                  label: 'Settings',
+                  selectedIcon: Icon(Icons.settings_outlined,
+                    color: settings.color,),
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.add,
+                    color: settings.color,),
+                  label: 'Add',
+                  selectedIcon: Icon(Icons.add_outlined,
+                    color: settings.color,),
+                ),
+              ],
+            ),
+          ),
+
+
+
+          NavigationBarTheme(
+            data: NavigationBarThemeData(
+              indicatorColor: Colors.grey.shade600,
+              backgroundColor: settings.bgColor,
+              labelTextStyle: MaterialStateProperty.all(
+                TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: settings.color),
+              ),
+            ),
+            child: NavigationBar(
+              height: 65,
+              selectedIndex: tabselected,
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+              animationDuration: Duration(seconds: 2),
+              onDestinationSelected: (index) {
+                setState(() {
+                  tabselected = index;
+                  changePage(index, context);
+                });
+              },
+              destinations: [
+                NavigationDestination(
+                  icon: Icon(Icons.home,
+                    color: settings.color,),
+                  label: 'Home',
+                  selectedIcon: Icon(Icons.home_outlined,
+                    color: settings.color,),
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.settings,
+                    color: settings.color,),
+                  label: 'Settings',
+                  selectedIcon: Icon(Icons.settings_outlined,
+                    color: settings.color,),
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.add,
+                    color: settings.color,),
+                  label: 'Add',
+                  selectedIcon: Icon(Icons.add_outlined,
+                    color: settings.color,),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+
       ///make into stack with buttons for pack actions
-      bottomNavigationBar: NavigationBarTheme(
+      /*bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
           indicatorColor: Colors.grey.shade600,
           backgroundColor: settings.bgColor,
@@ -289,7 +426,7 @@ class _CreatePackState extends State<CreatePack> {
             ),
           ],
         ),
-      ),
+      ),*/
     );
   }
 }

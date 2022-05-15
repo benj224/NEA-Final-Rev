@@ -151,12 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
-  int tabselected = 0;
-  final pages = [
-    MyHomePage(),
-    Settings(),
-    CreatePack(pack: null),
-  ];
+
 
 
 
@@ -219,7 +214,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ///button to add a new pack
               alignment: FractionalOffset(0.9, 0.95),
               child: FloatingActionButton(
-                backgroundColor: bgColor,
+                backgroundColor: bgColor
                 foregroundColor: settings.color,
                 child: Icon(Icons.add),
                 onPressed: () {
@@ -255,12 +250,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         child: NavigationBar(
           height: 65,
-          selectedIndex: tabselected,
+          selectedIndex: globals.tabselected,
           labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
           animationDuration: Duration(seconds: 2),
           onDestinationSelected: (index) {
             setState(() {
-              tabselected = index;
+              globals.tabselected = index;
               changePage(index, context);
             });
           },
